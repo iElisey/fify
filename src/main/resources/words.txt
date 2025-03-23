@@ -122,3 +122,103 @@ processed foods,оброблені продукти
 protein,білок  
 superfoods,суперпродукти  
 take your eye off the ball,втратити концентрацію, розсіятися
+absence,відсутність
+accept,приймати
+accompany,супроводжувати
+accurate,точний
+achieve,досягати
+acknowledge,визнати
+adjust,пристосовуватись
+admire,захоплюватись
+adolescent,підліток
+advice,порада
+advise,радити
+affair,справа
+agree on/to smth,погодитись на щось
+allow,дозволяти
+be eager to do,мати бажання щось робити
+be fond of (Ving),захоплюватися
+be in debt,бути в боргу
+be keen on (Ving),бути захопленим чимось
+benefit,користь, перевага
+blame,звинувачувати
+circumstances,обставини
+committee,комітет
+communicate,спілкуватись
+complete,завершувати
+concern,занепокоєння, стурбованість
+confirm,підтверджувати
+contribute,робити внесок
+curriculum,навчальна програма
+damage,пошкодження
+deal,угода
+defend,захищати
+demand,вимагати
+distinguish,розрізняти, виявляти відмінності
+distribute,розповсюджувати
+education,освіта
+effect,вплив
+efficiency,ефективність
+efficient,дієвий
+effort,зусилля
+election,вибори
+emphasize,підкреслювати, наголошувати
+employee,працівник
+empty,пустий
+enable,давати змогу, дозволяти
+encourage,заохочувати
+engage,залучати
+enhance,покращувати
+entertainment,розвага
+estimate,оцінювати
+evaluate,оцінювати, вимірювати
+evidence,докази
+examination,огляд (у лікаря)
+except,крім
+expand,розширювати
+facility,заклад, установа, приміщення
+former,колишній
+fate,доля
+feature,особливість
+focus,увага, зосередження
+fortune,статок, вдача
+generate,створювати, генерувати
+government,уряд
+guarantee,гарантія
+habit,звичка
+habitat,середовище проживання
+headquarters,штаб-квартира
+heritage,спадщина
+highway,магістраль
+homeless,бездомний
+horizon,горизонт
+household,домогосподарство
+improve,покращити
+in case of,у випадку
+incident,інцидент, випадок
+include,включати, містити у собі
+influence,вплив
+insist on,наполягати на
+involve,залучити, включати
+lack,нестача
+look for,шукати
+loose,вільний, нещільний
+lose,губити
+notice smth,помітити
+negotiate,вести переговори
+obligation,зобовʼязання
+occupy,займати
+offense,правопорушення
+opportunity,можливість
+participate,брати участь
+penalty,штраф, покарання
+permission,дозвіл
+pretend,прикидатися
+rely on,покладатися на
+require,вимагати
+sentence,вирок
+significant,значний, суттєвий, важливий
+violence,насильство
+victim,жертва
+widespread,широко розповсюджений
+whereas,в той час як
