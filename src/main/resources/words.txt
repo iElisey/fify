@@ -222,3 +222,4 @@ violence,насильство
 victim,жертва
 widespread,широко розповсюджений
 whereas,в той час як
+barely,ледь
