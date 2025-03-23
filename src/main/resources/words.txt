@@ -1,0 +1,124 @@
+vitamins,вітаміни  
+water intake,вживання води  
+whole foods,цільні продукти  
+whole grains,цільнозернові продукти  
+achievement,досягнення  
+agility,спритність  
+cup competition,кубковий турнір  
+endurance,витривалість  
+final,фінал  
+fishing,риболовля  
+flexibility,гнучкість  
+leisure,дозвілля  
+mascot,талісман  
+meditation,медитація  
+mindfulness,уважність  
+penalty,штраф, покарання  
+punching bag,боксерська груша  
+recovery,відновлення  
+relaxation,релаксація  
+resilience,стійкість  
+routine,режим  
+self-care,самопідтримка  
+semi-final,півфінал  
+wellness,добробут  
+track and field,легка атлетика  
+benefit (from),отримати вигоду від  
+be out of shape,бути не в формі  
+catch up,наздогнати  
+crawl,повзти  
+draw,зводити гру внічию  
+drop out,вибути (зі змагань)  
+enable,давати змогу  
+engage in,залучити в  
+excel,перевершувати  
+line up,шикуватися  
+perform,виступати, грати, виконувати  
+postpone,перенести  
+require,потребувати, вимагати  
+sprint,бігти на короткій дистанції  
+active lifestyle,активний спосіб життя  
+body mass index (bmi),індекс маси тіла (імт)  
+commit a foul,порушити правила  
+extra time,додатковий час  
+goal setting,постановка цілей  
+healthy habits,здорові звички  
+healthy weight,здорова вага  
+injury prevention,запобігання травмам  
+mental well-being,психічне благополуччя  
+outdoor activities,відпочинок на свіжому повітрі  
+penalty shootout,серія пенальті  
+physical fitness,фізична форма  
+strength training,силове тренування  
+stress management,управління стресом  
+a level playing field,рівні умови для всіх  
+a whole new ball game,це зовсім інша справа  
+be on the ball,бути уважним, пильним, готовим до дії  
+move the goalposts,міняти правила гри  
+score an own goal,забити гол (завдати шкоди) самому собі  
+start the ball rolling,розпочати процес  
+archer,лучник  
+athlete,атлет, спортсмен  
+boxer,боксер  
+captain,капітан (команди)  
+coach,тренер  
+competitor,суперник  
+contestant,учасник, конкурсант  
+cyclist,велосипедист  
+defender,захисник  
+fan,уболівальник  
+goalkeeper,воротар  
+gymnast,гімнаст  
+midfielder,півзахисник  
+player,гравець  
+referee,рефері, суддя  
+runner,бігун  
+skier,лижник  
+spectator,глядач за грою  
+striker,нападник  
+swimmer,плавець  
+teammate,товариш по команді  
+umpire,суддя  
+weightlifter,важкоатлет  
+wrestler,борець  
+athletes' village,олімпійське село  
+bronze medal,бронзова медаль  
+five interlocking rings,п'ять переплетених кілець  
+gold medal,золота медаль  
+olympic committee,олімпійський комітет  
+olympic flame,олімпійський вогонь  
+olympic torch,олімпійський факел  
+opening / closing ceremony,церемонія відкриття / закриття  
+silver medal,срібна медаль  
+solo sports,індивідуальні види спорту  
+summer olympics,літні олімпійські ігри  
+team sports,командні види спорту  
+winter olympics,зимові олімпійські ігри  
+paralympic games,паралімпійські ігри  
+accessibility,доступність  
+adaptive equipment,адаптивне обладнання  
+adaptive sports,адаптивні види спорту  
+inclusion,інклюзія  
+para-athletics,пара-легка атлетика  
+para-cycling,пара-велоспорт  
+para-swimming,пара-плавання  
+wheelchair basketball,баскетбол на інвалідних візках  
+wheelchair tennis,теніс на інвалідних візках  
+antioxidants,антиоксиданти  
+balanced diet,збалансована дієта  
+calories,калорії  
+carbohydrates,вуглеводи  
+fats,жири  
+fiber,клітковина  
+healthy eating,здорове харчування  
+hydration,гідратація, зволоження  
+meal planning,планування харчування  
+minerals,мінерали  
+nutrition,харчування  
+organic,органічний  
+plant-based,рослинне харчування  
+portion control,контроль порцій  
+processed foods,оброблені продукти  
+protein,білок  
+superfoods,суперпродукти  
+take your eye off the ball,втратити концентрацію, розсіятися
