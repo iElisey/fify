@@ -1,5 +1,10 @@
 package org.elos.fify;
 
+import kong.unirest.HttpResponse;
+import kong.unirest.JsonNode;
+import kong.unirest.Unirest;
+import kong.unirest.json.JSONArray;
+import kong.unirest.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.scheduling.annotation.Scheduled;
@@ -10,8 +15,12 @@ import org.telegram.telegrambots.longpolling.interfaces.LongPollingUpdateConsume
 import org.telegram.telegrambots.longpolling.starter.AfterBotRegistration;
 import org.telegram.telegrambots.longpolling.starter.SpringLongPollingBot;
 import org.telegram.telegrambots.longpolling.util.LongPollingSingleThreadUpdateConsumer;
+import org.telegram.telegrambots.meta.api.methods.AnswerInlineQuery;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.objects.Update;
+import org.telegram.telegrambots.meta.api.objects.inlinequery.InlineQuery;
+import org.telegram.telegrambots.meta.api.objects.inlinequery.inputmessagecontent.InputTextMessageContent;
+import org.telegram.telegrambots.meta.api.objects.inlinequery.result.InlineQueryResultArticle;
 import org.telegram.telegrambots.meta.api.objects.message.Message;
 import org.telegram.telegrambots.meta.generics.TelegramClient;
 
@@ -26,6 +35,8 @@ public class ElosBot implements SpringLongPollingBot, LongPollingSingleThreadUpd
     private final JdbcTemplate jdbcTemplate;
     private final Set<Long> activeChatIds = new HashSet<>();
     private final Map<Long, TestSession> testSessions = new HashMap<>();
+    private static final String API_URL = "https://api.aimlapi.com/v1/chat/completions";
+    private static final String API_KEY = "01c7a757bd2d41b68824763f6633976c"; // Вставьте ваш ключ
 
     @Autowired
     public ElosBot(DataSource dataSource) {
@@ -45,9 +56,116 @@ public class ElosBot implements SpringLongPollingBot, LongPollingSingleThreadUpd
         return this;
     }
 
+
+    private boolean trySendTranslation(Long chatId, String word) {
+        List<Word> translations = jdbcTemplate.query(
+                "SELECT english, ukrainian FROM words WHERE LOWER(english) = LOWER(?) OR LOWER(ukrainian) = LOWER(?) LIMIT 1",
+                new Object[]{word, word},
+                (rs, rowNum) -> new Word(rs.getString("english"), rs.getString("ukrainian"))
+        );
+
+        if (!translations.isEmpty()) {
+            Word foundWord = translations.get(0);
+            String response = foundWord.english.equalsIgnoreCase(word)
+                    ? "🇺🇸 " + foundWord.english + " → 🇺🇦 " + foundWord.ukrainian
+                    : "🇺🇦 " + foundWord.ukrainian + " → 🇺🇸 " + foundWord.english;
+
+            // Генерируем пример использования слова
+            String exampleSentence = askAI("generate a sentence B1 level (10-12 words) with word "+word + ", send only this sentence");
+
+            response += "\n📖 Приклад: " + exampleSentence;
+            sendMsg(chatId, response);
+            return true;
+        }
+        return false;
+    }
+
+
+    public static String askAI(String userMessage) {
+        try {
+            JSONObject requestBody = new JSONObject()
+                    .put("model", "gpt-4o")
+                    .put("messages", new JSONArray()
+                            .put(new JSONObject().put("role", "system")
+                                    .put("content", "You are an AI assistant who knows everything."))
+                            .put(new JSONObject().put("role", "user")
+                                    .put("content", userMessage)))
+                    .put("max_tokens", 100);
+
+            HttpResponse<JsonNode> response = Unirest.post(API_URL)
+                    .header("Authorization", "Bearer " + API_KEY)
+                    .header("Content-Type", "application/json")
+                    .body(requestBody)
+                    .asJson();
+
+            return response.getBody().getObject()
+                    .getJSONArray("choices")
+                    .getJSONObject(0)
+                    .getJSONObject("message")
+                    .getString("content")
+                    .trim();
+
+        } catch (Exception e) {
+            return "Error: " + e.getMessage();
+        }
+    }
+
+    private String generateExampleSentence(String word) {
+        String prompt = "You are an English teacher. Provide a simple English sentence using the given word." + "\nGenerate a sentence using the word " + word;
+        HttpResponse<JsonNode> response = Unirest.get("https://free-chatgpt-api.p.rapidapi.com/chat-completion-one?prompt=generate a sentence level B1 (8-10 words) using the word " +word +",send only sentence,you must show using this word in context")
+                .header("x-rapidapi-key", "a5c983f913mshce806fa65d2af76p154826jsn7c0930b4c81a")
+                .header("x-rapidapi-host", "free-chatgpt-api.p.rapidapi.com")
+                .asJson();
+        String response1 = response.getBody().getObject().getString("response");
+
+        return response1;
+    }
+
+    private void handleInlineQuery(InlineQuery inlineQuery) {
+        String queryText = inlineQuery.getQuery().trim();
+
+        if (queryText.isEmpty()) return;
+
+        // Получаем слова из базы данных
+        List<String> words = jdbcTemplate.query(
+                "SELECT english FROM words WHERE LOWER(english) LIKE LOWER(?)",
+                new Object[]{queryText + "%"},
+                (rs, rowNum) -> rs.getString("english")
+        );
+
+        List<InlineQueryResultArticle> results = new ArrayList<>();
+
+        for (String word : words) {
+            InputTextMessageContent messageContent = InputTextMessageContent.builder()
+                    .messageText(word).build();
+            messageContent.setMessageText(word);
+
+            InlineQueryResultArticle result = InlineQueryResultArticle.builder()
+                    .id(UUID.randomUUID().toString())
+                    .title(word)
+                    .inputMessageContent(messageContent).build();
+
+            results.add(result);
+        }
+
+        AnswerInlineQuery answer = AnswerInlineQuery.builder()
+                .inlineQueryId(inlineQuery.getId())
+                .results(results)
+                .cacheTime(1)
+                .build();
+        try {
+            telegramClient.execute(answer);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
     @Override
     public void consume(Update update) {
-        if (update.hasMessage() && update.getMessage().getText() != null) {
+        if (update.hasInlineQuery()) {
+            handleInlineQuery(update.getInlineQuery());
+            return;
+        }  if (update.hasMessage() && update.getMessage().getText() != null) {
             Message message = update.getMessage();
             Long chatId = message.getChatId();
             String messageText = message.getText().trim();
@@ -55,6 +173,10 @@ public class ElosBot implements SpringLongPollingBot, LongPollingSingleThreadUpd
             if (testSessions.containsKey(chatId)) {
                 testSessions.get(chatId).processAnswer(messageText);
                 return;
+            }
+
+            if (trySendTranslation(chatId, messageText)) {
+                return; // Если слово найдено, не выполняем другие команды
             }
 
             switch (messageText.toLowerCase()) {
@@ -170,7 +292,9 @@ public class ElosBot implements SpringLongPollingBot, LongPollingSingleThreadUpd
             if (currentIndex < words.size()) {
                 sendMsg(chatId, "❓ Як перекладається: <b>" + words.get(currentIndex).english + "</b>?");
             } else {
-                sendMsg(chatId, "✅ Тест завершено!\nПравильних відповідей: " + correctAnswers + "\nНеправильних відповідей: " + wrongAnswers);
+                int percent = (int) Math.round(((double) correctAnswers / (correctAnswers + wrongAnswers)) * 100);
+                String emoji = correctAnswers > 5 ? "\uD83D\uDC4C" : "\uD83D\uDC4E";
+                sendMsg(chatId, emoji+" Тест завершено!\nПравильних відповідей: " + correctAnswers + "\nНеправильних відповідей: " + wrongAnswers+"\nВідсоток правильних: "+percent+"%");
                 testSessions.remove(chatId);
             }
         }
