@@ -223,3 +223,140 @@ victim,жертва
 widespread,широко розповсюджений
 whereas,в той час як
 barely,ледь
+mean,підлий
+wise,мудрий
+astonished,здивований
+cruel,жорстокий
+disloyal,невірний
+fearless,безстрашний, мужній
+mature/immature,зрілий, незрілий
+mysterious,загадковий
+relaxed,невимушений, спокійний
+afraid (of),зляканий
+calm,спокійний
+hate,ненавидіти
+matter,справа, питання
+mood,настрій
+come from,походити з
+hurt,ображати, робити боляче
+matter,мати значення
+miss,сумувати за кимось
+pretend,вдавати
+shape,оформляти
+trust,довіряти
+adventurous,відчайдушний
+aggressive,агресивний
+ambitious/unambitious,честолюбний, нечестолюбний
+attentive,уважний
+boring,нудний, набридливий
+bossy,той, що любить командувати
+brave,хоробрий
+bright/intelligent,розумний, тямущий
+careful,обережний, обачний
+cheerful,веселий
+clever,розумний
+confident,впевнений
+courageous,сміливий
+creative,творчий
+dependent/independent,залежний, незалежний
+easy-going,легкий в спілкуванні
+fair,справедливий
+friendly/unfriendly,дружелюбний, недружелюбний
+generous,щедрий, великодушний
+gentle,ніжний
+hard-working,працелюбний
+honest/dishonest,чесний, нечесний
+kind/unkind,добрий, недобрий
+lazy,ледачий
+loving,люблячий
+loyal,вірний
+modest,скромний
+naughty,неслухняний, вередливий
+negative,негативний
+original,оригінальний
+patient/impatient,терплячий, нетерплячий
+personality,особистість
+polite/impolite,ввічливий, неввічливий
+positive,позитивний
+quiet,спокійний
+realistic/unrealistic,реалістичний, нереалістичний
+reliable/unreliable,надійний, ненадійний
+responsible/irresponsible,відповідальний, невідповідальний
+rude,грубий
+secure/insecure,надійний, ненадійний
+selfish/unselfish,егоїстичний, неегоїстичний
+sensible,розумний; той, що має сенс
+sensitive,чуйний, чутливий
+shy,соромʼязливий
+silly,дурний
+simple,простий
+sociable,товариський
+strict,суворий, вимогливий
+strong,сильний
+stubborn,упертий, непіддатливий
+stupid,дурний
+talkative,балакучий
+thoughtful,вдумливий, уважний, дбайливий
+tidy/untidy,охайний, неохайний
+tolerant/intolerant,толерантний, нетолерантний
+angry,сердитий, розгніваний
+annoyed,роздратований
+ashamed,присоромлений
+avoid,уникати
+despise,зневажати
+embarrassed,збентежений, присоромлений
+envious,заздрісний
+grateful (to sb for smth),вдячний
+jealous (of),ревнивий, заздрісний
+nagging feeling,щемливе / ниюче відчуття
+nervous,нервовий
+pleased,задоволений
+sad,сумний
+scared,наляканий
+shattered,розбитий
+stunned,приголомшений
+surprised,здивований
+terrified,наляканий
+upset,засмучений
+worried,стурбований
+baby shower,вечірка для майбутньої мами
+card,листівка
+celebrate sth,святкувати щось
+celebration,святкування
+Christmas Eve,переддень Різдва
+decorate the Christmas tree,прикрашати різдвяну ялинку
+family event,сімейна подія
+invitation,запрошення
+invite (sb to sth),запрошувати
+Maundy Thursday,Чистий четвер
+procession,процесія
+reception,прийом
+wedding (anniversary/ceremony/reception),річниця весілля/весільна церемонія/весільний прийом
+affection,прихильність
+concern,занепокоєння
+preference,вподобання
+self-esteem,самооцінка
+substitute (for),заміна (на)
+depend (on),залежати від
+develop,розвивати
+disappoint,розчаровувати
+encourage,заохочувати
+entertain,розважати
+envy,заздрити
+exaggerate,перебільшувати
+improve,покращувати
+laugh (at),сміятися (з)
+upset,засмучувати
+be in somebody's shoes,бути на чиємусь місці
+be interested in,бути зацікавленим в
+be into sth,бути зацікавленим чимось
+be mad about,злитися через
+can't stand,не можна витримати
+complete opposite,повна протилежність
+express feelings,виражати почуття
+get angry/excited,розгніватися/схвилюватися
+improve mood,покращити настрій
+keep somebody amused,розважати когось
+mental development,розумовий розвиток
+personal preference,особисті вподобання/переваги
+shape behaviour,формувати поведінку
