@@ -73,7 +73,14 @@ public class ElosBot implements SpringLongPollingBot, LongPollingSingleThreadUpd
             if (trySendTranslation(chatId, messageText)) {
                 return;
             }
-
+            if(messageText.startsWith("/add_word")){
+                String englishAndUkr = messageText.split(" ")[1];
+                String english = englishAndUkr.split("=")[0];
+                String ukrainian = englishAndUkr.split("=")[1];
+                Word word = new Word(english,ukrainian);
+                Word savedWord = wordRepository.save(word);
+                sendMsg(chatId, "✅ Word "+savedWord.getEnglish()+" successfully added to database!");
+            }
             switch (messageText.toLowerCase()) {
                 case "/start":
                     start(chatId);
