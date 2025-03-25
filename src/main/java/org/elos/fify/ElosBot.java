@@ -26,6 +26,11 @@ import org.telegram.telegrambots.meta.api.objects.inlinequery.InlineQuery;
 import org.telegram.telegrambots.meta.api.objects.inlinequery.inputmessagecontent.InputTextMessageContent;
 import org.telegram.telegrambots.meta.api.objects.inlinequery.result.InlineQueryResultArticle;
 import org.telegram.telegrambots.meta.api.objects.message.Message;
+import org.telegram.telegrambots.meta.api.objects.replykeyboard.InlineKeyboardMarkup;
+import org.telegram.telegrambots.meta.api.objects.replykeyboard.ReplyKeyboardMarkup;
+import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.InlineKeyboardButton;
+import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.InlineKeyboardRow;
+import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.KeyboardRow;
 import org.telegram.telegrambots.meta.generics.TelegramClient;
 
 import java.io.BufferedReader;
@@ -78,7 +83,13 @@ public class ElosBot implements SpringLongPollingBot, LongPollingSingleThreadUpd
                 welcome(message);
             } else {
                 User user = userService.findByChatId(chatId);
-                if (testSessions.containsKey(chatId)) {
+                if (messageText.equalsIgnoreCase("/cancel") || messageText.equalsIgnoreCase("Скасувати")) {
+                    testSessions.remove(chatId);
+                    user.setPosition(0);
+                    userService.save(user);
+                    sendMsg(chatId, "✖\uFE0F Дію скасовано.");
+                    return;
+                }  if (testSessions.containsKey(chatId)) {
 
                     testSessions.get(chatId).processAnswer(messageText);
                     if (testSessions.get(chatId).getCurrentIndex() == 10) {
@@ -89,6 +100,7 @@ public class ElosBot implements SpringLongPollingBot, LongPollingSingleThreadUpd
                 if (trySendTranslation(chatId, messageText)) {
                     return;
                 }
+
                 if (user.getPosition() == 0) {
                     switch (messageText.toLowerCase()) {
                         case "/start":
@@ -108,12 +120,12 @@ public class ElosBot implements SpringLongPollingBot, LongPollingSingleThreadUpd
                             startTest(chatId);
                             break;
                         case "/add_word":
-                            sendMsg(chatId,"\uD83C\uDDFA\uD83C\uDDF8 Write a word in English:");
+                            sendMsgWithButtonCancel(chatId, "\uD83C\uDDFA\uD83C\uDDF8 Write a word in English:");
                             user.setPosition(1);
                             userService.save(user);
                             break;
                         case "/ai":
-                            sendMsg(chatId, "ℹ\uFE0F Напиши питання, яке ти хочеш поставити штучному інтелекту.");
+                            sendMsgWithButtonCancel(chatId, "ℹ\uFE0F Напиши питання, яке ти хочеш поставити штучному інтелекту.");
                             user.setPosition(3);
                             userService.save(user);
                             break;
@@ -143,17 +155,16 @@ public class ElosBot implements SpringLongPollingBot, LongPollingSingleThreadUpd
 
                 } else if (user.getPosition() == 1) {
                     tempWords.put(chatId, messageText);
-                    sendMsg(chatId,"\uD83C\uDDFA\uD83C\uDDE6 Write translation of the word in Ukrainian:");
+                    sendMsgWithButtonCancel(chatId, "\uD83C\uDDFA\uD83C\uDDE6 Write translation of the word in Ukrainian:");
                     user.setPosition(2);
                     userService.save(user);
-                }
-                else if (user.getPosition() == 2) {
+                } else if (user.getPosition() == 2) {
                     String english = tempWords.get(chatId);
                     String ukrainian = messageText;
                     if (english != null) {
                         Word word = new Word(english, ukrainian);
                         wordRepository.save(word);
-                        sendMsg(chatId, "✅ Word <i>" + word.getEnglish() + "</i> added to database!");
+                        sendMsgWithButtonCancel(chatId, "✅ Word <i>" + word.getEnglish() + "</i> added to database!");
                         tempWords.remove(chatId);
                     } else {
                         sendMsg(chatId, "⚠️ Error! Please, write /add_word again.");
@@ -301,7 +312,7 @@ public class ElosBot implements SpringLongPollingBot, LongPollingSingleThreadUpd
                     }
                 }
             }
-            sendMsg(chatId, "<b>Додано нових слів: </b>"+count+"\nЗагальна кількість слів: "+wordRepository.findAll().size());
+            sendMsg(chatId, "<b>Додано нових слів: </b>" + count + "\nЗагальна кількість слів: " + wordRepository.findAll().size());
         } catch (Exception e) {
             System.err.println("Помилка завантаження слів: " + e.getMessage());
         }
@@ -339,6 +350,27 @@ public class ElosBot implements SpringLongPollingBot, LongPollingSingleThreadUpd
                 .text(text)
                 .parseMode("HTML")
                 .build();
+        try {
+            telegramClient.execute(sendMessage);
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    private void sendMsgWithButtonCancel(Long chatId, String text) {
+        SendMessage sendMessage = SendMessage.builder()
+                .chatId(chatId)
+                .text(text)
+                .parseMode("HTML")
+                .build();
+        KeyboardRow row = new KeyboardRow();
+        row.add("Скасувати");
+        ReplyKeyboardMarkup keyboardMarkup = ReplyKeyboardMarkup
+                .builder().keyboard(Arrays.asList(row))
+                .resizeKeyboard(true)
+                .oneTimeKeyboard(true)
+                .build();
+        sendMessage.setReplyMarkup(keyboardMarkup);
         try {
             telegramClient.execute(sendMessage);
         } catch (Exception e) {
