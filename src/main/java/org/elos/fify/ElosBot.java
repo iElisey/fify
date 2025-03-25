@@ -50,7 +50,6 @@ public class ElosBot implements SpringLongPollingBot, LongPollingSingleThreadUpd
         this.userService = userService;
         this.telegramClient = new OkHttpTelegramClient(getBotToken());
         this.wordRepository = wordRepository;
-        loadWordsFromFile();
     }
 
     @Override
@@ -96,6 +95,11 @@ public class ElosBot implements SpringLongPollingBot, LongPollingSingleThreadUpd
                             start(message);
                             activeChatIds.add(chatId);
                             break;
+                        case "/web":
+                            if (chatId == adminId) {
+                                sendReplyMsg(chatId, "<a href=\"https://fify-hhc6asgfhsctg0hj.francecentral-01.azurewebsites.net/\"><b>Web Link</b></a>", message.getMessageId());
+                            }
+                            break;
                         case "/stop":
                             activeChatIds.remove(chatId);
                             sendMsg(chatId, "🛑 Відправка слів зупинена.");
@@ -127,6 +131,11 @@ public class ElosBot implements SpringLongPollingBot, LongPollingSingleThreadUpd
                                     "/add_word - додати слово в базу даних\n" +
                                     "/ai - запитати щось в штучного інтелекту\n" +
                                     "/analytics - безполєзна функція, показує скільки слів у базі даних", message.getMessageId());
+                            break;
+                        case "/load_words":
+                            if (chatId == adminId) {
+                                loadWordsFromFile(chatId);
+                            }
                             break;
                         default:
                             sendMsg(chatId, "❓ Невідома команда.");
@@ -271,7 +280,8 @@ public class ElosBot implements SpringLongPollingBot, LongPollingSingleThreadUpd
         }
     }
 
-    private void loadWordsFromFile() {
+    private void loadWordsFromFile(Long chatId) {
+        int count = 0;
         try (BufferedReader reader = new BufferedReader(
                 new InputStreamReader(Objects.requireNonNull(getClass().getClassLoader().getResourceAsStream("words.txt"))))) {
             String line;
@@ -286,9 +296,12 @@ public class ElosBot implements SpringLongPollingBot, LongPollingSingleThreadUpd
                     // Перевіряємо чи вже існує запис для цього англійського слова
                     if (!wordRepository.existsByEnglish(english)) {
                         wordRepository.save(new Word(english, ukrainian));
+                        count++;
+
                     }
                 }
             }
+            sendMsg(chatId, "<b>Додано нових слів: </b>"+count+"\nЗагальна кількість слів: "+wordRepository.findAll().size());
         } catch (Exception e) {
             System.err.println("Помилка завантаження слів: " + e.getMessage());
         }
