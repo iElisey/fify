@@ -80,7 +80,8 @@ public class ElosBot implements SpringLongPollingBot, LongPollingSingleThreadUpd
                 Word word = new Word(english,ukrainian);
                 Word savedWord = wordRepository.save(word);
                 sendMsg(chatId, "✅ Word "+savedWord.getEnglish()+" successfully added to database!");
-            }
+                return;
+}
             switch (messageText.toLowerCase()) {
                 case "/start":
                     start(chatId);
