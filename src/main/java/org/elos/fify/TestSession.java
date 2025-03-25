@@ -11,6 +11,7 @@ import java.util.List;
 public class TestSession {
     private final Long chatId;
     private final List<Word> words;
+    @Getter
     private int currentIndex = 0;
     private int correctAnswers = 0;
     private int wrongAnswers = 0;
@@ -28,7 +29,7 @@ public class TestSession {
         } else {
             int percent = (int) Math.round(((double) correctAnswers / (correctAnswers + wrongAnswers)) * 100);
             String emoji = correctAnswers > 5 ? "\uD83D\uDC4C" : "\uD83D\uDC4E";
-            sendMsg(chatId, emoji + " Тест завершено!\nПравильних відповідей: " + correctAnswers + 
+            sendMsg(chatId, emoji + " <b>Тест завершено!</b>\nПравильних відповідей: " + correctAnswers +
                    "\nНеправильних відповідей: " + wrongAnswers + "\nВідсоток правильних: " + percent + "%");
         }
     }

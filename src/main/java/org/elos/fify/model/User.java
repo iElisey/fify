@@ -7,24 +7,20 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @Entity
-@Table(name = "words")
-@Setter
 @Getter
+@Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class Word {
+@Table(name = "users")
+public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    
-    private String english;
-    
-    private String ukrainian;
 
-    public Word(String english, String ukrainian) {
-        this.english = english;
-        this.ukrainian = ukrainian;
-    }
+    private String username;
 
+    private Long chatId;
+
+    private int position;
 
 }

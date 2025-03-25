@@ -5,8 +5,11 @@ import kong.unirest.JsonNode;
 import kong.unirest.Unirest;
 import kong.unirest.json.JSONArray;
 import kong.unirest.json.JSONObject;
+import org.elos.fify.model.User;
 import org.elos.fify.model.Word;
+import org.elos.fify.repository.UserRepository;
 import org.elos.fify.repository.WordRepository;
+import org.elos.fify.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
@@ -37,9 +40,14 @@ public class ElosBot implements SpringLongPollingBot, LongPollingSingleThreadUpd
     private final Map<Long, TestSession> testSessions = new HashMap<>();
     private static final String API_URL = "https://api.aimlapi.com/v1/chat/completions";
     private static final String API_KEY = "01c7a757bd2d41b68824763f6633976c";
-    private static final Long adminId = 975340794L;
+    private static final long adminId = 975340794L;
+    private final UserService userService;
+    private final Map<Long, String> tempWords = new HashMap<>();
+    private final Map<Long, Integer> tempMessageIds = new HashMap<>();
+
     @Autowired
-    public ElosBot(WordRepository wordRepository) {
+    public ElosBot(WordRepository wordRepository, UserService userService, UserRepository userRepository) {
+        this.userService = userService;
         this.telegramClient = new OkHttpTelegramClient(getBotToken());
         this.wordRepository = wordRepository;
         loadWordsFromFile();
@@ -54,6 +62,7 @@ public class ElosBot implements SpringLongPollingBot, LongPollingSingleThreadUpd
     public LongPollingUpdateConsumer getUpdatesConsumer() {
         return this;
     }
+
     @Override
     public void consume(Update update) {
         if (update.hasInlineQuery()) {
@@ -65,37 +74,98 @@ public class ElosBot implements SpringLongPollingBot, LongPollingSingleThreadUpd
             Long chatId = message.getChatId();
             String messageText = message.getText().trim();
 
-            if (testSessions.containsKey(chatId)) {
-                testSessions.get(chatId).processAnswer(messageText);
-                return;
-            }
 
-            if (trySendTranslation(chatId, messageText)) {
-                return;
-            }
+            if (!userService.existsByChatId(chatId)) {
+                welcome(message);
+            } else {
+                User user = userService.findByChatId(chatId);
+                if (testSessions.containsKey(chatId)) {
 
-            switch (messageText.toLowerCase()) {
-                case "/start":
-                    start(chatId);
-                    activeChatIds.add(chatId);
-                    break;
-                case "/stop":
-                    activeChatIds.remove(chatId);
-                    sendMsg(chatId, "🛑 Відправка слів зупинена.");
-                    break;
-                case "/test_words":
-                    startTest(chatId);
-                    break;
-                case "/analytics":
-                    if (chatId==adminId) {
-                        return;
+                    testSessions.get(chatId).processAnswer(messageText);
+                    if (testSessions.get(chatId).getCurrentIndex() == 10) {
+                        testSessions.remove(chatId);
                     }
-                    showAnalytics(chatId);
-                    break;
-                default:
-                    sendMsg(chatId, "❓ Невідома команда.");
+                    return;
+                }
+                if (trySendTranslation(chatId, messageText)) {
+                    return;
+                }
+                if (user.getPosition() == 0) {
+                    switch (messageText.toLowerCase()) {
+                        case "/start":
+                            start(message);
+                            activeChatIds.add(chatId);
+                            break;
+                        case "/stop":
+                            activeChatIds.remove(chatId);
+                            sendMsg(chatId, "🛑 Відправка слів зупинена.");
+                            break;
+                        case "/test_words":
+                            startTest(chatId);
+                            break;
+                        case "/add_word":
+                            sendMsg(chatId,"\uD83C\uDDFA\uD83C\uDDF8 Write a word in English:");
+                            user.setPosition(1);
+                            userService.save(user);
+                            break;
+                        case "/ai":
+                            sendMsg(chatId, "ℹ\uFE0F Напиши питання, яке ти хочеш поставити штучному інтелекту.");
+                            user.setPosition(3);
+                            userService.save(user);
+                            break;
+                        case "/analytics":
+                            if (chatId != adminId) {
+                                return;
+                            }
+                            showAnalytics(chatId);
+                            break;
+                        case "/help":
+                            sendReplyMsg(chatId, "⚙\uFE0F <b>List of available commands:</b>\n\n" +
+                                    "/start - увімкнути надсилання слів англійською кожні 10 секунд\n" +
+                                    "/stop - зупинити надсилання\n" +
+                                    "/test_words - перевірити себе на знання будь-яких 10 слів\n" +
+                                    "/add_word - додати слово в базу даних\n" +
+                                    "/ai - запитати щось в штучного інтелекту\n" +
+                                    "/analytics - безполєзна функція, показує скільки слів у базі даних", message.getMessageId());
+                            break;
+                        default:
+                            sendMsg(chatId, "❓ Невідома команда.");
+                    }
+
+                } else if (user.getPosition() == 1) {
+                    tempWords.put(chatId, messageText);
+                    sendMsg(chatId,"\uD83C\uDDFA\uD83C\uDDE6 Write translation of the word in Ukrainian:");
+                    user.setPosition(2);
+                    userService.save(user);
+                }
+                else if (user.getPosition() == 2) {
+                    String english = tempWords.get(chatId);
+                    String ukrainian = messageText;
+                    if (english != null) {
+                        Word word = new Word(english, ukrainian);
+                        wordRepository.save(word);
+                        sendMsg(chatId, "✅ Word <i>" + word.getEnglish() + "</i> added to database!");
+                        tempWords.remove(chatId);
+                    } else {
+                        sendMsg(chatId, "⚠️ Error! Please, write /add_word again.");
+                    }
+                    user.setPosition(0);
+                    userService.save(user);
+                } else if (user.getPosition() == 3) {
+                    String answer = askAI(messageText);
+                    sendReplyMsg(chatId, answer, message.getMessageId());
+                    user.setPosition(0);
+                    userService.save(user);
+                }
+
             }
+
         }
+    }
+
+    private void welcome(Message message) {
+        addUser(message);
+        sendMsg(message.getChatId(), "<b>\uD83D\uDE4C Ви зареєстровані в боті.</b>\nНапишіть команду /start, щоб отримувати слова кожні 10 секунд.");
     }
 
     private void showAnalytics(Long chatId) {
@@ -184,8 +254,21 @@ public class ElosBot implements SpringLongPollingBot, LongPollingSingleThreadUpd
     }
 
 
-    private void start(Long chatId) {
-        sendMsg(chatId, "🌟 <b>Ласкаво просимо!</b> Слова з’являтимуться кожні 10 секунд.\n/stop - зупинити\n/test_words - перевірити себе на знання 10 слів");
+    private void start(Message message) {
+        addUser(message);
+        sendMsg(message.getChatId(), "🌟 <b>Ласкаво просимо!</b> Слова з’являтимуться кожні 10 секунд.\n/stop - зупинити\n/test_words - перевірити себе на знання 10 слів");
+    }
+
+    private void addUser(Message message) {
+        Long chatId = message.getChatId();
+        if (!userService.existsByChatId(chatId)) {
+
+            String name = message.getFrom().getUserName();
+            String username = (name.isEmpty() || name == null) ?
+                    message.getFrom().getFirstName() + " " +
+                            (message.getFrom().getLastName() == null ? "" : message.getFrom().getLastName()) : name;
+            userService.add(chatId, username);
+        }
     }
 
     private void loadWordsFromFile() {
@@ -241,6 +324,20 @@ public class ElosBot implements SpringLongPollingBot, LongPollingSingleThreadUpd
         SendMessage sendMessage = SendMessage.builder()
                 .chatId(chatId)
                 .text(text)
+                .parseMode("HTML")
+                .build();
+        try {
+            telegramClient.execute(sendMessage);
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    private void sendReplyMsg(Long chatId, String text, Integer messageId) {
+        SendMessage sendMessage = SendMessage.builder()
+                .chatId(chatId)
+                .text(text)
+                .replyToMessageId(messageId)
                 .parseMode("HTML")
                 .build();
         try {
