@@ -11,12 +11,18 @@ public interface WordRepository extends JpaRepository<Word, Long> {
     Optional<Word> findFirstByEnglishIgnoreCaseOrUkrainianIgnoreCase(String english, String ukrainian);
     List<Word> findByEnglishStartingWithIgnoreCase(String prefix);
     List<Word> findAll();
+    List<Word> findByTopic(String topic);
+
+    @Query(value = "SELECT * FROM words WHERE topic = :topic ORDER BY RANDOM() LIMIT :limit", nativeQuery = true)
+    List<Word> findRandomWordsByTopic(String topic, int limit);
+
+    @Query(value = "SELECT * FROM words WHERE topic != :topic ORDER BY RANDOM() LIMIT :limit", nativeQuery = true)
+    List<Word> findRandomWordsExcludingTopic(String topic, int limit);
+
+    @Query(value = "SELECT DISTINCT topic FROM words", nativeQuery = true)
+    List<String> findAllTopics();
+
     boolean existsByEnglishAndUkrainian(String english, String ukrainian);
-    
-    @Query(value = "SELECT * FROM words ORDER BY RANDOM() LIMIT 10", nativeQuery = true)
-    List<Word> findRandom10Words();
 
-    Optional<Word> findByEnglishAndUkrainian(String english, String ukrainian);
-
-    boolean existsByEnglish(String english);
+    Optional<Word> findByEnglish(String english);
 }

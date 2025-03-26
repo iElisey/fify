@@ -7,16 +7,13 @@ import kong.unirest.json.JSONArray;
 import kong.unirest.json.JSONObject;
 import org.elos.fify.model.User;
 import org.elos.fify.model.Word;
-import org.elos.fify.repository.UserRepository;
 import org.elos.fify.repository.WordRepository;
 import org.elos.fify.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.client.okhttp.OkHttpTelegramClient;
-import org.telegram.telegrambots.longpolling.BotSession;
 import org.telegram.telegrambots.longpolling.interfaces.LongPollingUpdateConsumer;
-import org.telegram.telegrambots.longpolling.starter.AfterBotRegistration;
 import org.telegram.telegrambots.longpolling.starter.SpringLongPollingBot;
 import org.telegram.telegrambots.longpolling.util.LongPollingSingleThreadUpdateConsumer;
 import org.telegram.telegrambots.meta.api.methods.AnswerInlineQuery;
@@ -26,32 +23,30 @@ import org.telegram.telegrambots.meta.api.objects.inlinequery.InlineQuery;
 import org.telegram.telegrambots.meta.api.objects.inlinequery.inputmessagecontent.InputTextMessageContent;
 import org.telegram.telegrambots.meta.api.objects.inlinequery.result.InlineQueryResultArticle;
 import org.telegram.telegrambots.meta.api.objects.message.Message;
-import org.telegram.telegrambots.meta.api.objects.replykeyboard.InlineKeyboardMarkup;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.ReplyKeyboardMarkup;
-import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.InlineKeyboardButton;
-import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.InlineKeyboardRow;
+import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.KeyboardButton;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.KeyboardRow;
 import org.telegram.telegrambots.meta.generics.TelegramClient;
 
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.util.*;
+import java.util.stream.Collectors;
 
 @Component
 public class ElosBot implements SpringLongPollingBot, LongPollingSingleThreadUpdateConsumer {
     private final TelegramClient telegramClient;
     private final WordRepository wordRepository;
-    private final Set<Long> activeChatIds = new HashSet<>();
+    private final UserService userService;
     private final Map<Long, TestSession> testSessions = new HashMap<>();
+    private final Map<Long, String> tempWords = new HashMap<>();
+    private final Map<Long, String> tempTopics = new HashMap<>();
+    private static final long ADMIN_ID = 975340794L;
     private static final String API_URL = "https://api.aimlapi.com/v1/chat/completions";
     private static final String API_KEY = "01c7a757bd2d41b68824763f6633976c";
-    private static final long adminId = 975340794L;
-    private final UserService userService;
-    private final Map<Long, String> tempWords = new HashMap<>();
-    private final Map<Long, Integer> tempMessageIds = new HashMap<>();
 
     @Autowired
-    public ElosBot(WordRepository wordRepository, UserService userService, UserRepository userRepository) {
+    public ElosBot(WordRepository wordRepository, UserService userService) {
         this.userService = userService;
         this.telegramClient = new OkHttpTelegramClient(getBotToken());
         this.wordRepository = wordRepository;
@@ -67,6 +62,8 @@ public class ElosBot implements SpringLongPollingBot, LongPollingSingleThreadUpd
         return this;
     }
 
+
+
     @Override
     public void consume(Update update) {
         if (update.hasInlineQuery()) {
@@ -78,166 +75,41 @@ public class ElosBot implements SpringLongPollingBot, LongPollingSingleThreadUpd
             Long chatId = message.getChatId();
             String messageText = message.getText().trim();
 
-
             if (!userService.existsByChatId(chatId)) {
-                welcome(message);
+                welcome(chatId, message.getFrom().getUserName());
             } else {
                 User user = userService.findByChatId(chatId);
                 if (messageText.equalsIgnoreCase("/cancel") || messageText.equalsIgnoreCase("Скасувати")) {
                     testSessions.remove(chatId);
                     user.setPosition(0);
                     userService.save(user);
-                    sendMsg(chatId, "✖\uFE0F Дію скасовано.");
+                    sendMsg(chatId, "✖️ Дію скасовано.");
                     return;
-                }  if (testSessions.containsKey(chatId)) {
-
+                }
+                if (testSessions.containsKey(chatId)) {
                     testSessions.get(chatId).processAnswer(messageText);
                     if (testSessions.get(chatId).getCurrentIndex() == 10) {
                         testSessions.remove(chatId);
                     }
                     return;
                 }
+                // Ось де викликається trySendTranslation
                 if (trySendTranslation(chatId, messageText)) {
                     return;
                 }
 
                 if (user.getPosition() == 0) {
-                    switch (messageText.toLowerCase()) {
-                        case "/start":
-                            start(message);
-                            activeChatIds.add(chatId);
-                            break;
-                        case "/web":
-                            if (chatId == adminId) {
-                                sendReplyMsg(chatId, "<a href=\"https://fify-hhc6asgfhsctg0hj.francecentral-01.azurewebsites.net/\"><b>Web Link</b></a>", message.getMessageId());
-                            }
-                            break;
-                        case "/stop":
-                            activeChatIds.remove(chatId);
-                            sendMsg(chatId, "🛑 Відправка слів зупинена.");
-                            break;
-                        case "/test_words":
-                            startTest(chatId);
-                            break;
-                        case "/add_word":
-                            sendMsgWithButtonCancel(chatId, "\uD83C\uDDFA\uD83C\uDDF8 Write a word in English:");
-                            user.setPosition(1);
-                            userService.save(user);
-                            break;
-                        case "/ai":
-                            sendMsgWithButtonCancel(chatId, "ℹ\uFE0F Напиши питання, яке ти хочеш поставити штучному інтелекту.");
-                            user.setPosition(3);
-                            userService.save(user);
-                            break;
-                        case "/analytics":
-                            if (chatId != adminId) {
-                                return;
-                            }
-                            showAnalytics(chatId);
-                            break;
-                        case "/help":
-                            sendReplyMsg(chatId, "⚙\uFE0F <b>List of available commands:</b>\n\n" +
-                                    "/start - увімкнути надсилання слів англійською кожні 10 секунд\n" +
-                                    "/stop - зупинити надсилання\n" +
-                                    "/test_words - перевірити себе на знання будь-яких 10 слів\n" +
-                                    "/add_word - додати слово в базу даних\n" +
-                                    "/ai - запитати щось в штучного інтелекту\n" +
-                                    "/analytics - безполєзна функція, показує скільки слів у базі даних", message.getMessageId());
-                            break;
-                        case "/load_words":
-                            if (chatId == adminId) {
-                                loadWordsFromFile(chatId);
-                            }
-                            break;
-                        default:
-                            sendMsg(chatId, "❓ Невідома команда.");
-                    }
-
-                } else if (user.getPosition() == 1) {
-                    tempWords.put(chatId, messageText);
-                    sendMsgWithButtonCancel(chatId, "\uD83C\uDDFA\uD83C\uDDE6 Write translation of the word in Ukrainian:");
-                    user.setPosition(2);
-                    userService.save(user);
-                } else if (user.getPosition() == 2) {
-                    String english = tempWords.get(chatId);
-                    String ukrainian = messageText;
-                    if (english != null) {
-                        Word word = new Word(english, ukrainian);
-                        wordRepository.save(word);
-                        sendMsgWithButtonCancel(chatId, "✅ Word <i>" + word.getEnglish() + "</i> added to database!");
-                        tempWords.remove(chatId);
-                    } else {
-                        sendMsg(chatId, "⚠️ Error! Please, write /add_word again.");
-                    }
-                    user.setPosition(0);
-                    userService.save(user);
-                } else if (user.getPosition() == 3) {
-                    String answer = askAI(messageText);
-                    sendReplyMsg(chatId, answer, message.getMessageId());
-                    user.setPosition(0);
-                    userService.save(user);
+                    handleCommand(chatId, messageText, user, message.getMessageId());
+                } else {
+                    handleUserInput(chatId, messageText, user, message.getMessageId());
                 }
-
             }
-
         }
     }
 
-    private void welcome(Message message) {
-        addUser(message);
-        sendMsg(message.getChatId(), "<b>\uD83D\uDE4C Ви зареєстровані в боті.</b>\nНапишіть команду /start, щоб отримувати слова кожні 10 секунд.");
-    }
-
-    private void showAnalytics(Long chatId) {
-        List<Word> words = wordRepository.findAll();
-        StringBuilder sb = new StringBuilder();
-        sb.append("<b>\uD83D\uDCCA Analytic:</b>\n");
-        sb.append("Words amount: ").append(words.size());
-        sendMsg(chatId, sb.toString());
-    }
-
-    private boolean trySendTranslation(Long chatId, String word) {
-        Optional<Word> foundWord = wordRepository.findFirstByEnglishIgnoreCaseOrUkrainianIgnoreCase(word, word);
-        if (foundWord.isPresent()) {
-            Word word1 = foundWord.get();
-            String response = word1.getEnglish().equalsIgnoreCase(word)
-                    ? "🇺🇸 " + word1.getEnglish() + " → 🇺🇦 " + word1.getUkrainian()
-                    : "🇺🇦 " + word1.getUkrainian() + " → 🇺🇸 " + word1.getEnglish();
-
-            String exampleSentence = askAI("generate a sentence B1 level (10-12 words) with word " + word + ", send only this sentence");
-            response += "\n📖 Приклад: " + exampleSentence;
-            sendMsg(chatId, response);
-            return true;
-        }
-        return false;
-    }
-
-    public static String askAI(String userMessage) {
-        try {
-            JSONObject requestBody = new JSONObject()
-                    .put("model", "gpt-4o")
-                    .put("messages", new JSONArray()
-                            .put(new JSONObject().put("role", "system")
-                                    .put("content", "You are an AI assistant who knows everything."))
-                            .put(new JSONObject().put("role", "user")
-                                    .put("content", userMessage)))
-                    .put("max_tokens", 100);
-
-            HttpResponse<JsonNode> response = Unirest.post(API_URL)
-                    .header("Authorization", "Bearer " + API_KEY)
-                    .header("Content-Type", "application/json")
-                    .body(requestBody)
-                    .asJson();
-
-            return response.getBody().getObject()
-                    .getJSONArray("choices")
-                    .getJSONObject(0)
-                    .getJSONObject("message")
-                    .getString("content")
-                    .trim();
-        } catch (Exception e) {
-            return "Error: " + e.getMessage();
-        }
+    private void welcome(Long chatId, String username) {
+        userService.add(chatId, username);
+        sendMsg(chatId, "<b>👋 Ви зареєстровані!</b>\nВведіть /start, щоб почати.");
     }
 
     private void handleInlineQuery(InlineQuery inlineQuery) {
@@ -273,73 +145,234 @@ public class ElosBot implements SpringLongPollingBot, LongPollingSingleThreadUpd
         }
     }
 
+    private boolean trySendTranslation(Long chatId, String word) {
+        Optional<Word> foundWord = wordRepository.findFirstByEnglishIgnoreCaseOrUkrainianIgnoreCase(word, word);
+        if (foundWord.isPresent()) {
+            Word word1 = foundWord.get();
+            String response = word1.getEnglish().equalsIgnoreCase(word)
+                    ? "🇺🇸 " + word1.getEnglish() + " → 🇺🇦 " + word1.getUkrainian()
+                    : "🇺🇦 " + word1.getUkrainian() + " → 🇺🇸 " + word1.getEnglish();
 
-    private void start(Message message) {
-        addUser(message);
-        sendMsg(message.getChatId(), "🌟 <b>Ласкаво просимо!</b> Слова з’являтимуться кожні 10 секунд.\n/stop - зупинити\n/test_words - перевірити себе на знання 10 слів");
+            String exampleSentence = askAI("generate a sentence B1 level (10-12 words) with word " + word + ", send only this sentence");
+            response += "\n📖 Приклад: " + exampleSentence;
+            sendMsg(chatId, response);
+            return true;
+        }
+        return false;
     }
 
-    private void addUser(Message message) {
-        Long chatId = message.getChatId();
-        if (!userService.existsByChatId(chatId)) {
-
-            String name = message.getFrom().getUserName();
-            String username = (name.isEmpty() || name == null) ?
-                    message.getFrom().getFirstName() + " " +
-                            (message.getFrom().getLastName() == null ? "" : message.getFrom().getLastName()) : name;
-            userService.add(chatId, username);
+    private void handleCommand(Long chatId, String text, User user, Integer messageId) {
+        switch (text.toLowerCase()) {
+            case "/start":
+                sendMsg(chatId, "<b>\uD83D\uDFE2 Відправка слів почалася</b> (тема: <i>" + user.getPreferredTopic() + "</i>).\n" +
+                        "Аби змінити тему, напишіть:\n/change_topic");
+                user.setSendWords(true);
+                userService.save(user);
+                break;
+            case "/change_topic":
+                sendMsg(chatId, "🌟 Виберіть тему слів:");
+                showTopics(chatId);
+                user.setPosition(1);
+                userService.save(user);
+                break;
+            case "/stop":
+                userService.setSendWords(chatId, false);
+                sendMsg(chatId, "🛑 Відправка слів зупинена.");
+                break;
+            case "/test_words":
+                sendMsg(chatId, "📝 Виберіть тему для тесту:");
+                showTopics(chatId);
+                user.setPosition(2);
+                userService.save(user);
+                break;
+            case "/add_word":
+                sendMessageWithCancel(chatId, "🇺🇸 Введіть слово англійською:");
+                user.setPosition(3);
+                userService.save(user);
+                break;
+            case "/web":
+                if (chatId == ADMIN_ID) {
+                    sendReplyMessage(chatId, "<a href=\"https://ielisey.github.io/fifyfront/\"><b>Web Link</b></a>", messageId);
+                }
+                break;
+            case "/ai":
+                sendMessageWithCancel(chatId, "ℹ️ Введіть питання для ШІ:");
+                user.setPosition(5);
+                userService.save(user);
+                break;
+            case "/analytics":
+                if (chatId == ADMIN_ID) {
+                    showAnalytics(chatId);
+                }
+                break;
+            case "/load_words":
+                if (chatId == ADMIN_ID) {
+                    loadWordsFromFile(chatId);
+                }
+                break;
+            case "/help":
+                sendMsg(chatId, "⚙️ <b>Команди:</b>\n" +
+                        "/start - почати відправку слів\n" +
+                        "/stop - зупинити відправку\n" +
+                        "/change_topic - змінити тему слів\n"+
+                        "/test_words - пройти тест\n" +
+                        "/add_word - додати слово\n" +
+                        "/web - посилання (адмін)\n" +
+                        "/ai - запитати ШІ\n" +
+                        "/analytics - аналітика (адмін)\n" +
+                        "/load_words - завантажити слова (адмін)");
+                break;
+            default:
+                sendMsg(chatId, "❓ Невідома команда.");
         }
     }
 
+
+    private void handleUserInput(Long chatId, String text, User user, Integer messageId) {
+        if (user.getPosition() == 1) { // Вибір теми для відправки
+            List<String> availableTopics = wordRepository.findAllTopics();
+            if (availableTopics.contains(text)) {
+                userService.setPreferredTopic(chatId, text);
+                userService.setSendWords(chatId, true);
+                sendMsg(chatId, "✅ Відправка слів почалася (тема: " + text + ").");
+            } else {
+                sendMsg(chatId, "❌ Теми '" + text + "' немає в базі даних. Виберіть іншу:\n" + String.join("\n", availableTopics));
+                return; // Залишаємо користувача в стані вибору теми
+            }
+            user.setPosition(0);
+        } else if (user.getPosition() == 2) { // Вибір теми для тесту
+            startTest(chatId, text);
+            user.setPosition(0);
+            userService.save(user);
+        } else if (user.getPosition() == 3) { // Додавання слова (англ)
+            tempWords.put(chatId, text);
+            sendMessageWithCancel(chatId, "🇺🇦 Введіть переклад українською:");
+            user.setPosition(4);
+            userService.save(user);
+        } else if (user.getPosition() == 4) { // Додавання слова (укр)
+            String english = tempWords.remove(chatId);
+            wordRepository.save(new Word(english, text, "other"));
+            sendMsg(chatId, "✅ Слово <i>" + english + "</i> додано!");
+            user.setPosition(0);
+            userService.save(user);
+        } else if (user.getPosition() == 5) { // Запит до ШІ
+            String answer = askAI(text);
+            sendReplyMessage(chatId, answer, messageId);
+            user.setPosition(0);
+            userService.save(user);
+        }
+    }
+
+    private void showAnalytics(Long chatId) {
+        long wordCount = wordRepository.count();
+        sendMsg(chatId, "<b>📊 Аналітика:</b>\nСлів у базі: " + wordCount);
+    }
+
     private void loadWordsFromFile(Long chatId) {
-        int count = 0;
+        int updatedCount = 0;
+        int addedCount = 0;
+
         try (BufferedReader reader = new BufferedReader(
                 new InputStreamReader(Objects.requireNonNull(getClass().getClassLoader().getResourceAsStream("words.txt"))))) {
             String line;
             while ((line = reader.readLine()) != null) {
-                String[] parts = line.split(",");
-                if (parts.length > 1) {
+                String[] parts = line.split("=");
+                if (parts.length >= 2) {
                     String english = parts[0].trim();
+                    String ukrainian = parts[1].trim();
+                    String topic = (parts.length > 2) ? parts[2].trim() : "other"; // Якщо тема відсутня, встановлюємо "other"
 
-                    // Збираємо всі варіанти значення в українській мові (все після першого елемента)
-                    String ukrainian = String.join(", ", Arrays.copyOfRange(parts, 1, parts.length)).trim();
+                    // Перевіряємо, чи слово вже є в базі
+                    Optional<Word> existingWord = wordRepository.findByEnglish(english);
 
-                    // Перевіряємо чи вже існує запис для цього англійського слова
-                    if (!wordRepository.existsByEnglish(english)) {
-                        wordRepository.save(new Word(english, ukrainian));
-                        count++;
-
+                    if (existingWord.isPresent()) {
+                        Word word = existingWord.get();
+                        if (!Objects.equals(word.getTopic(), topic) || word.getTopic() == null) { // Оновлюємо лише якщо тема змінилася
+                            word.setTopic(topic);
+                            wordRepository.save(word);
+                            updatedCount++;
+                        }
+                    } else {
+                        wordRepository.save(new Word(english, ukrainian, topic));
+                        addedCount++;
                     }
                 }
             }
-            sendMsg(chatId, "<b>Додано нових слів: </b>" + count + "\nЗагальна кількість слів: " + wordRepository.findAll().size());
+
+            sendMsg(chatId, "<b>Оновлено слів: </b>" + updatedCount +
+                    "\n<b>Додано нових слів: </b>" + addedCount +
+                    "\nЗагальна кількість слів: " + wordRepository.count());
         } catch (Exception e) {
             System.err.println("Помилка завантаження слів: " + e.getMessage());
         }
     }
 
-    @Scheduled(fixedRate = 10000)
-    private void sendRandomWord() {
-        if (activeChatIds.isEmpty()) return;
+    private String askAI(String userMessage) {
+        try {
+            JSONObject requestBody = new JSONObject()
+                    .put("model", "gpt-4o")
+                    .put("messages", new JSONArray()
+                            .put(new JSONObject().put("role", "system")
+                                    .put("content", "You are an AI assistant who knows everything."))
+                            .put(new JSONObject().put("role", "user")
+                                    .put("content", userMessage)))
+                    .put("max_tokens", 100);
 
-        List<Word> words = wordRepository.findAll();
-        if (!words.isEmpty()) {
-            Collections.shuffle(words);
-            Word randomWord = words.get(0);
-            String message = "✨ <i>" + randomWord.getEnglish() + "</i> - <i>" + randomWord.getUkrainian() + "</i>";
-            for (Long chatId : activeChatIds) {
-                sendMsg(chatId, message);
+            HttpResponse<JsonNode> response = Unirest.post(API_URL)
+                    .header("Authorization", "Bearer " + API_KEY)
+                    .header("Content-Type", "application/json")
+                    .body(requestBody)
+                    .asJson();
+
+            return response.getBody().getObject()
+                    .getJSONArray("choices")
+                    .getJSONObject(0)
+                    .getJSONObject("message")
+                    .getString("content")
+                    .trim();
+        } catch (Exception e) {
+            return "Error: " + e.getMessage();
+        }
+    }
+
+    private void showTopics(Long chatId) {
+        List<String> topics = wordRepository.findAllTopics();
+        StringBuilder sb = new StringBuilder("Доступні теми:\n");
+        topics.forEach(topic -> sb.append("- ").append(topic).append("\n"));
+        sendMsg(chatId, sb.toString());
+    }
+
+    @Scheduled(fixedRate = 10000)
+    private void sendRandomWords() {
+        List<User> activeUsers = userService.findAll().stream()
+                .filter(User::isSendWords)
+                .toList();
+
+        if (activeUsers.isEmpty()) return;
+
+        for (User user : activeUsers) {
+            List<Word> words = new ArrayList<>();
+            String preferredTopic = user.getPreferredTopic();
+            List<Word> topicWords = wordRepository.findRandomWordsByTopic(preferredTopic, 9);
+            if (topicWords.isEmpty()) {
+                continue; // Пропускаємо користувача, якщо в обраній темі немає слів
+            }
+            words.addAll(topicWords); // 90%
+            words.addAll(wordRepository.findRandomWordsExcludingTopic(preferredTopic, 1)); // 10%
+            if (!words.isEmpty()) {
+                Collections.shuffle(words);
+                Word word = words.get(0);
+                sendMsg(user.getChatId(), "✨ <i>" + word.getEnglish() + "</i> - <i>" + word.getUkrainian() + "</i>");
             }
         }
     }
 
-    private void startTest(Long chatId) {
-        List<Word> words = wordRepository.findRandom10Words();
+    private void startTest(Long chatId, String topic) {
+        List<Word> words = wordRepository.findRandomWordsByTopic(topic, 10);
         if (words.isEmpty()) {
-            sendMsg(chatId, "⚠️ У базі немає слів для тесту.");
+            sendMsg(chatId, "⚠️ Немає слів для тесту за темою " + topic);
             return;
         }
-
         testSessions.put(chatId, new TestSession(chatId, words, telegramClient));
         testSessions.get(chatId).askNextWord();
     }
@@ -357,28 +390,26 @@ public class ElosBot implements SpringLongPollingBot, LongPollingSingleThreadUpd
         }
     }
 
-    private void sendMsgWithButtonCancel(Long chatId, String text) {
+    private void sendMessageWithCancel(Long chatId, String text) {
         SendMessage sendMessage = SendMessage.builder()
                 .chatId(chatId)
                 .text(text)
                 .parseMode("HTML")
+                .replyMarkup(ReplyKeyboardMarkup.builder()
+                        .keyboardRow(new KeyboardRow(KeyboardButton.builder().text("Скасувати").build()))
+                        .resizeKeyboard(true)
+                        .oneTimeKeyboard(true)
+                        .build())
                 .build();
-        KeyboardRow row = new KeyboardRow();
-        row.add("Скасувати");
-        ReplyKeyboardMarkup keyboardMarkup = ReplyKeyboardMarkup
-                .builder().keyboard(Arrays.asList(row))
-                .resizeKeyboard(true)
-                .oneTimeKeyboard(true)
-                .build();
-        sendMessage.setReplyMarkup(keyboardMarkup);
         try {
             telegramClient.execute(sendMessage);
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
+
     }
 
-    private void sendReplyMsg(Long chatId, String text, Integer messageId) {
+    private void sendReplyMessage(Long chatId, String text, Integer messageId) {
         SendMessage sendMessage = SendMessage.builder()
                 .chatId(chatId)
                 .text(text)
@@ -390,10 +421,5 @@ public class ElosBot implements SpringLongPollingBot, LongPollingSingleThreadUpd
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
-    }
-
-    @AfterBotRegistration
-    private void afterRegistration(BotSession botSession) {
-        System.out.println("Bot running: " + botSession.isRunning());
     }
 }

@@ -16,14 +16,22 @@ public class Word {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    
+
     private String english;
-    
+
     private String ukrainian;
+
+    private String topic = "other";
 
     public Word(String english, String ukrainian) {
         this.english = english;
         this.ukrainian = ukrainian;
+    }
+
+    public Word(String english, String ukrainian, String topic) {
+        this.english = english;
+        this.ukrainian = ukrainian;
+        this.topic = topic;
     }
 
 

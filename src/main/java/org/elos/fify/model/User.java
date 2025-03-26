@@ -9,18 +9,17 @@ import lombok.Setter;
 @Entity
 @Getter
 @Setter
+@Table(name = "users")
 @AllArgsConstructor
 @NoArgsConstructor
-@Table(name = "users")
 public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     private String username;
-
     private Long chatId;
-
-    private int position;
-
+    private int position = 0;
+    private boolean sendWords = false;
+    private String preferredTopic = "other";
 }

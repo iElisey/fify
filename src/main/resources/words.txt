@@ -1,362 +1,490 @@
-vitamins,вітаміни  
-water intake,вживання води  
-whole foods,цільні продукти  
-whole grains,цільнозернові продукти  
-achievement,досягнення  
-agility,спритність  
-cup competition,кубковий турнір  
-endurance,витривалість  
-final,фінал  
-fishing,риболовля  
-flexibility,гнучкість  
-leisure,дозвілля  
-mascot,талісман  
-meditation,медитація  
-mindfulness,уважність  
-penalty,штраф, покарання  
-punching bag,боксерська груша  
-recovery,відновлення  
-relaxation,релаксація  
-resilience,стійкість  
-routine,режим  
-self-care,самопідтримка  
-semi-final,півфінал  
-wellness,добробут  
-track and field,легка атлетика  
-benefit (from),отримати вигоду від  
-be out of shape,бути не в формі  
-catch up,наздогнати  
-crawl,повзти  
-draw,зводити гру внічию  
-drop out,вибути (зі змагань)  
-enable,давати змогу  
-engage in,залучити в  
-excel,перевершувати  
-line up,шикуватися  
-perform,виступати, грати, виконувати  
-postpone,перенести  
-require,потребувати, вимагати  
-sprint,бігти на короткій дистанції  
-active lifestyle,активний спосіб життя  
-body mass index (bmi),індекс маси тіла (імт)  
-commit a foul,порушити правила  
-extra time,додатковий час  
-goal setting,постановка цілей  
-healthy habits,здорові звички  
-healthy weight,здорова вага  
-injury prevention,запобігання травмам  
-mental well-being,психічне благополуччя  
-outdoor activities,відпочинок на свіжому повітрі  
-penalty shootout,серія пенальті  
-physical fitness,фізична форма  
-strength training,силове тренування  
-stress management,управління стресом  
-a level playing field,рівні умови для всіх  
-a whole new ball game,це зовсім інша справа  
-be on the ball,бути уважним, пильним, готовим до дії  
-move the goalposts,міняти правила гри  
-score an own goal,забити гол (завдати шкоди) самому собі  
-start the ball rolling,розпочати процес  
-archer,лучник  
-athlete,атлет, спортсмен  
-boxer,боксер  
-captain,капітан (команди)  
-coach,тренер  
-competitor,суперник  
-contestant,учасник, конкурсант  
-cyclist,велосипедист  
-defender,захисник  
-fan,уболівальник  
-goalkeeper,воротар  
-gymnast,гімнаст  
-midfielder,півзахисник  
-player,гравець  
-referee,рефері, суддя  
-runner,бігун  
-skier,лижник  
-spectator,глядач за грою  
-striker,нападник  
-swimmer,плавець  
-teammate,товариш по команді  
-umpire,суддя  
-weightlifter,важкоатлет  
-wrestler,борець  
-athletes' village,олімпійське село  
-bronze medal,бронзова медаль  
-five interlocking rings,п'ять переплетених кілець  
-gold medal,золота медаль  
-olympic committee,олімпійський комітет  
-olympic flame,олімпійський вогонь  
-olympic torch,олімпійський факел  
-opening / closing ceremony,церемонія відкриття / закриття  
-silver medal,срібна медаль  
-solo sports,індивідуальні види спорту  
-summer olympics,літні олімпійські ігри  
-team sports,командні види спорту  
-winter olympics,зимові олімпійські ігри  
-paralympic games,паралімпійські ігри  
-accessibility,доступність  
-adaptive equipment,адаптивне обладнання  
-adaptive sports,адаптивні види спорту  
-inclusion,інклюзія  
-para-athletics,пара-легка атлетика  
-para-cycling,пара-велоспорт  
-para-swimming,пара-плавання  
-wheelchair basketball,баскетбол на інвалідних візках  
-wheelchair tennis,теніс на інвалідних візках  
-antioxidants,антиоксиданти  
-balanced diet,збалансована дієта  
-calories,калорії  
-carbohydrates,вуглеводи  
-fats,жири  
-fiber,клітковина  
-healthy eating,здорове харчування  
-hydration,гідратація, зволоження  
-meal planning,планування харчування  
-minerals,мінерали  
-nutrition,харчування  
-organic,органічний  
-plant-based,рослинне харчування  
-portion control,контроль порцій  
-processed foods,оброблені продукти  
-protein,білок  
-superfoods,суперпродукти  
-take your eye off the ball,втратити концентрацію, розсіятися
-absence,відсутність
-accept,приймати
-accompany,супроводжувати
-accurate,точний
-achieve,досягати
-acknowledge,визнати
-adjust,пристосовуватись
-admire,захоплюватись
-adolescent,підліток
-advice,порада
-advise,радити
-affair,справа
-agree on/to smth,погодитись на щось
-allow,дозволяти
-be eager to do,мати бажання щось робити
-be fond of (Ving),захоплюватися
-be in debt,бути в боргу
-be keen on (Ving),бути захопленим чимось
-benefit,користь, перевага
-blame,звинувачувати
-circumstances,обставини
-committee,комітет
-communicate,спілкуватись
-complete,завершувати
-concern,занепокоєння, стурбованість
-confirm,підтверджувати
-contribute,робити внесок
-curriculum,навчальна програма
-damage,пошкодження
-deal,угода
-defend,захищати
-demand,вимагати
-distinguish,розрізняти, виявляти відмінності
-distribute,розповсюджувати
-education,освіта
-effect,вплив
-efficiency,ефективність
-efficient,дієвий
-effort,зусилля
-election,вибори
-emphasize,підкреслювати, наголошувати
-employee,працівник
-empty,пустий
-enable,давати змогу, дозволяти
-encourage,заохочувати
-engage,залучати
-enhance,покращувати
-entertainment,розвага
-estimate,оцінювати
-evaluate,оцінювати, вимірювати
-evidence,докази
-examination,огляд (у лікаря)
-except,крім
-expand,розширювати
-facility,заклад, установа, приміщення
-former,колишній
-fate,доля
-feature,особливість
-focus,увага, зосередження
-fortune,статок, вдача
-generate,створювати, генерувати
-government,уряд
-guarantee,гарантія
-habit,звичка
-habitat,середовище проживання
-headquarters,штаб-квартира
-heritage,спадщина
-highway,магістраль
-homeless,бездомний
-horizon,горизонт
-household,домогосподарство
-improve,покращити
-in case of,у випадку
-incident,інцидент, випадок
-include,включати, містити у собі
-influence,вплив
-insist on,наполягати на
-involve,залучити, включати
-lack,нестача
-look for,шукати
-loose,вільний, нещільний
-lose,губити
-notice smth,помітити
-negotiate,вести переговори
-obligation,зобовʼязання
-occupy,займати
-offense,правопорушення
-opportunity,можливість
-participate,брати участь
-penalty,штраф, покарання
-permission,дозвіл
-pretend,прикидатися
-rely on,покладатися на
-require,вимагати
-sentence,вирок
-significant,значний, суттєвий, важливий
-violence,насильство
-victim,жертва
-widespread,широко розповсюджений
-whereas,в той час як
-barely,ледь
-mean,підлий
-wise,мудрий
-astonished,здивований
-cruel,жорстокий
-disloyal,невірний
-fearless,безстрашний, мужній
-mature/immature,зрілий, незрілий
-mysterious,загадковий
-relaxed,невимушений, спокійний
-afraid (of),зляканий
-calm,спокійний
-hate,ненавидіти
-matter,справа, питання
-mood,настрій
-come from,походити з
-hurt,ображати, робити боляче
-matter,мати значення
-miss,сумувати за кимось
-pretend,вдавати
-shape,оформляти
-trust,довіряти
-adventurous,відчайдушний
-aggressive,агресивний
-ambitious/unambitious,честолюбний, нечестолюбний
-attentive,уважний
-boring,нудний, набридливий
-bossy,той, що любить командувати
-brave,хоробрий
-bright/intelligent,розумний, тямущий
-careful,обережний, обачний
-cheerful,веселий
-clever,розумний
-confident,впевнений
-courageous,сміливий
-creative,творчий
-dependent/independent,залежний, незалежний
-easy-going,легкий в спілкуванні
-fair,справедливий
-friendly/unfriendly,дружелюбний, недружелюбний
-generous,щедрий, великодушний
-gentle,ніжний
-hard-working,працелюбний
-honest/dishonest,чесний, нечесний
-kind/unkind,добрий, недобрий
-lazy,ледачий
-loving,люблячий
-loyal,вірний
-modest,скромний
-naughty,неслухняний, вередливий
-negative,негативний
-original,оригінальний
-patient/impatient,терплячий, нетерплячий
-personality,особистість
-polite/impolite,ввічливий, неввічливий
-positive,позитивний
-quiet,спокійний
-realistic/unrealistic,реалістичний, нереалістичний
-reliable/unreliable,надійний, ненадійний
-responsible/irresponsible,відповідальний, невідповідальний
-rude,грубий
-secure/insecure,надійний, ненадійний
-selfish/unselfish,егоїстичний, неегоїстичний
-sensible,розумний; той, що має сенс
-sensitive,чуйний, чутливий
-shy,соромʼязливий
-silly,дурний
-simple,простий
-sociable,товариський
-strict,суворий, вимогливий
-strong,сильний
-stubborn,упертий, непіддатливий
-stupid,дурний
-talkative,балакучий
-thoughtful,вдумливий, уважний, дбайливий
-tidy/untidy,охайний, неохайний
-tolerant/intolerant,толерантний, нетолерантний
-angry,сердитий, розгніваний
-annoyed,роздратований
-ashamed,присоромлений
-avoid,уникати
-despise,зневажати
-embarrassed,збентежений, присоромлений
-envious,заздрісний
-grateful (to sb for smth),вдячний
-jealous (of),ревнивий, заздрісний
-nagging feeling,щемливе / ниюче відчуття
-nervous,нервовий
-pleased,задоволений
-sad,сумний
-scared,наляканий
-shattered,розбитий
-stunned,приголомшений
-surprised,здивований
-terrified,наляканий
-upset,засмучений
-worried,стурбований
-baby shower,вечірка для майбутньої мами
-card,листівка
-celebrate sth,святкувати щось
-celebration,святкування
-Christmas Eve,переддень Різдва
-decorate the Christmas tree,прикрашати різдвяну ялинку
-family event,сімейна подія
-invitation,запрошення
-invite (sb to sth),запрошувати
-Maundy Thursday,Чистий четвер
-procession,процесія
-reception,прийом
-wedding (anniversary/ceremony/reception),річниця весілля/весільна церемонія/весільний прийом
-affection,прихильність
-concern,занепокоєння
-preference,вподобання
-self-esteem,самооцінка
-substitute (for),заміна (на)
-depend (on),залежати від
-develop,розвивати
-disappoint,розчаровувати
-encourage,заохочувати
-entertain,розважати
-envy,заздрити
-exaggerate,перебільшувати
-improve,покращувати
-laugh (at),сміятися (з)
-upset,засмучувати
-be in somebody's shoes,бути на чиємусь місці
-be interested in,бути зацікавленим в
-be into sth,бути зацікавленим чимось
-be mad about,злитися через
-can't stand,не можна витримати
-complete opposite,повна протилежність
-express feelings,виражати почуття
-get angry/excited,розгніватися/схвилюватися
-improve mood,покращити настрій
-keep somebody amused,розважати когось
-mental development,розумовий розвиток
-personal preference,особисті вподобання/переваги
-shape behaviour,формувати поведінку
+archer=лучник=sport_2
+athlete=атлет, спортсмен=sport_2
+boxer=боксер=sport_2
+captain=капітан (команди)=sport_2
+coach=тренер=sport_2
+competitor=суперник=sport_2
+rival=конкурент=sport_2
+opponent=супротивник=sport_2
+contestant=учасник, конкурсант=sport_2
+cyclist=велосипедист=sport_2
+defender=захисник=sport_2
+fan=уболівальник=sport_2
+goalkeeper=воротар=sport_2
+gymnast=гімнаст=sport_2
+midfielder=півзахисник=sport_2
+player=гравець=sport_2
+referee=рефері, суддя (у футболі, баскетболі тощо)=sport_2
+runner=бігун=sport_2
+skier=лижник=sport_2
+spectator=глядач за грою=sport_2
+striker=нападник (у футболі)=sport_2
+swimmer=плавець=sport_2
+teammate=товариш по команді=sport_2
+umpire=суддя (у тенісі, бейсболі, крикеті)=sport_2
+weightlifter=важкоатлет=sport_2
+wrestler=борець=sport_2
+athletes' village=олімпійське село=sport_2
+bronze medal=бронзова медаль=sport_2
+five interlocking rings=п'ять переплетених кілець=sport_2
+gold medal=золота медаль=sport_2
+olympic committee=олімпійський комітет=sport_2
+olympic flame=олімпійський вогонь=sport_2
+olympic torch=олімпійський факел=sport_2
+opening / closing ceremony=церемонія відкриття / закриття=sport_2
+silver medal=срібна медаль=sport_2
+solo sports=індивідуальні види спорту=sport_2
+summer olympics=літні олімпійські ігри=sport_2
+team sports=командні види спорту=sport_2
+winter olympics=зимові олімпійські ігри=sport_2
+paralympic games=паралімпійські ігри (міжнародні спортивні змагання для людей з інвалідністю)=sport_2
+accessibility=доступність=sport_2
+adaptive equipment=адаптивне обладнання=sport_2
+adaptive sports=адаптивні види спорту=sport_2
+inclusion=інклюзія=sport_2
+para-athletics=пара-легка атлетика=sport_2
+para-cycling=пара-велоспорт=sport_2
+para-swimming=пара-плавання=sport_2
+wheelchair basketball=баскетбол на інвалідних візках=sport_2
+wheelchair tennis=теніс на інвалідних візках=sport_2
+antioxidants=антиоксиданти=sport_2
+balanced diet=збалансована дієта=sport_2
+calories=калорії=sport_2
+carbohydrates=вуглеводи=sport_2
+fats=жири=sport_2
+fiber=клітковина=sport_2
+healthy eating=здорове харчування=sport_2
+hydration=гідратація, зволоження=sport_2
+meal planning=планування харчування=sport_2
+minerals=мінерали=sport_2
+nutrition=харчування=sport_2
+organic=органічний=sport_2
+plant-based=рослинне харчування=sport_2
+portion control=контроль порцій=sport_2
+processed foods=оброблені продукти=sport_2
+protein=білок=sport_2
+superfoods=суперпродукти=sport_2
+vitamins=вітаміни=sport_2
+water intake=вживання води=sport_2
+whole foods=цільні продукти=sport_2
+whole grains=цільнозернові продукти=sport_2
+achievement=досягнення=sport_2
+agility=спритність=sport_2
+cup competition=кубковий турнір=sport_2
+endurance=витривалість=sport_2
+final=фінал=sport_2
+fishing=риболовля=sport_2
+flexibility=гнучкість=sport_2
+leisure=дозвілля=sport_2
+mascot=талісман=sport_2
+meditation=медитація=sport_2
+mindfulness=уважність=sport_2
+penalty=штраф, покарання=sport_2
+punching bag=боксерська груша=sport_2
+recovery=відновлення=sport_2
+relaxation=релаксація=sport_2
+resilience=стійкість=sport_2
+routine=режим=sport_2
+self-care=самопідтримка=sport_2
+semi-final=півфінал=sport_2
+wellness=добробут=sport_2
+track and field=легка атлетика=sport_2
+benefit (from)=отримати вигоду від=sport_2
+be out of shape=бути не в формі=sport_2
+catch up=наздогнати=sport_2
+crawl=повзти=sport_2
+draw=зводити гру внічию=sport_2
+drop out=вибути (зі змагань)=sport_2
+engage in=залучити в=sport_2
+excel=перевершувати=sport_2
+line up=шикуватися=sport_2
+perform=виступати, грати, виконувати=sport_2
+postpone=перенести=sport_2
+require=потребувати, вимагати=sport_2
+sprint=бігти на короткій дистанції=sport_2
+active lifestyle=активний спосіб життя=sport_2
+body mass index (bmi)=індекс маси тіла (імт)=sport_2
+commit a foul=порушити правила=sport_2
+extra time=додатковий час=sport_2
+goal setting=постановка цілей=sport_2
+healthy habits=здорові звички=sport_2
+healthy weight=здорова вага=sport_2
+injury prevention=запобігання травмам=sport_2
+mental well-being=психічне благополуччя=sport_2
+outdoor activities=відпочинок на свіжому повітрі=sport_2
+penalty shootout=серія пенальті=sport_2
+physical fitness=фізична форма=sport_2
+strength training=силове тренування=sport_2
+stress management=управління стресом=sport_2
+a level playing field=рівні умови для всіх=sport_2
+a whole new ball game=це зовсім інша справа=sport_2
+be on the ball=бути уважним, пильним, готовим до дії=sport_2
+move the goalposts=міняти правила гри=sport_2
+score an own goal=забити гол (завдати шкоди) самому собі=sport_2
+start the ball rolling=розпочати процес=sport_2
+take your eye off the ball=втратити концентрацію, розсіятися=sport_2
+adventurous=відчайдушний=society_3
+aggressive=агресивний=society_3
+ambitious/unambitious=честолюбний, нечестолюбний=society_3
+attentive=уважний=society_3
+boring=нудний, набридливий=society_3
+bossy=той, що любить командувати=society_3
+brave=хоробрий=society_3
+bright/intelligent=розумний, тямущий=society_3
+careful=обережний, обачний=society_3
+cheerful=веселий=society_3
+clever=розумний=society_3
+confident=впевнений=society_3
+courageous=сміливий=society_3
+creative=творчий=society_3
+dependent/independent=залежний, незалежний=society_3
+disloyal=невірний=society_3
+easy-going=легкий в спілкуванні=society_3
+fair=справедливий=society_3
+fearless=безстрашний, мужній=society_3
+friendly/unfriendly=дружелюбний, недружелюбний=society_3
+generous=щедрий, великодушний=society_3
+gentle=ніжний=society_3
+hard-working=працелюбний=society_3
+honest/dishonest=чесний, нечесний=society_3
+kind/unkind=добрий, недобрий=society_3
+lazy=ледачий=society_3
+loving=люблячий=society_3
+loyal=вірний=society_3
+mature/immature=зрілий, незрілий=society_3
+mean=підлий=society_3
+mysterious=загадковий=society_3
+naughty=неслухняний, вередливий=society_3
+negative=негативний=society_3
+original=оригінальний=society_3
+patient/impatient=терплячий, нетерплячий=society_3
+personality=особистість=society_3
+polite/impolite=ввічливий, неввічливий=society_3
+positive=позитивний=society_3
+quiet=спокійний=society_3
+realistic/unrealistic=реалістичний, нереалістичний=society_3
+relaxed=невимушений, спокійний=society_3
+reliable/unreliable=надійний, ненадійний=society_3
+responsible/irresponsible=відповідальний, невідповідальний=society_3
+rude=грубий=society_3
+secure/insecure=надійний, ненадійний=society_3
+selfish/unselfish=егоїстичний, неегоїстичний=society_3
+sensible=розумний; той, що має сенс=society_3
+sensitive=чуйний, чутливий=society_3
+shy=соромʼязливий=society_3
+silly=дурний=society_3
+simple=простий=society_3
+sociable=товариський=society_3
+strong=сильний=society_3
+stubborn=упертий, непіддатливий=society_3
+stupid=дурний=society_3
+talkative=балакучий=society_3
+thoughtful=вдумливий, уважний, дбайливий=society_3
+tidy/untidy=охайний, неохайний=society_3
+tolerant/intolerant=толерантний, нетолерантний=society_3
+wise=мудрий=society_3
+cruel=жорстокий=society_3
+modest=скромний=society_3
+strict=суворий, вимогливий=society_3
+afraid (of)=зляканий=society_3
+angry=сердитий, розгніваний=society_3
+astonished=здивований=society_3
+annoyed=роздратований=society_3
+ashamed=присоромлений=society_3
+shattered=розбитий=society_3
+stunned=приголомшений=society_3
+avoid=уникати=society_3
+calm=спокійний=society_3
+despise=зневажати=society_3
+embarrassed=збентежений, присоромлений=society_3
+envious=заздрісний=society_3
+grateful (to sb for smth)=вдячний=society_3
+hate=ненавидіти=society_3
+jealous (of)=ревнивий, заздрісний=society_3
+nagging feeling=щемливе / ниюче відчуття=society_3
+nervous=нервовий=society_3
+pleased=задоволений=society_3
+sad=сумний=society_3
+scared=наляканий=society_3
+surprised=здивований=society_3
+terrified=наляканий=society_3
+upset=засмучений=society_3
+worried=стурбований=society_3
+baby shower=вечірка для майбутньої мами=society_3
+card=листівка=society_3
+celebrate sth=святкувати щось=society_3
+celebration=святкування=society_3
+Christmas Eve=переддень Різдва=society_3
+decorate the Christmas tree=прикрашати різдвяну ялинку=society_3
+family event=сімейна подія=society_3
+invitation=запрошення=society_3
+invite (sb to sth)=запрошувати=society_3
+Maundy Thursday=Чистий четвер=society_3
+procession=процесія=society_3
+reception=прийом=society_3
+wedding (anniversary/ceremony/reception)=річниця весілля/весільна церемонія/весільний прийом=society_3
+affection=прихильність=society_3
+concern=занепокоєння=society_3
+matter=справа, питання=society_3
+mood=настрій=society_3
+preference=вподобання=society_3
+self-esteem=самооцінка=society_3
+substitute (for)=заміна (на)=society_3
+come from=походити з=society_3
+depend (on)=залежати від=society_3
+develop=розвивати=society_3
+disappoint=розчаровувати=society_3
+encourage=заохочувати=society_3
+entertain=розважати=society_3
+envy=заздрити=society_3
+exaggerate=перебільшувати=society_3
+hurt=ображати, робити боляче=society_3
+improve=покращувати=society_3
+laugh (at)=сміятися (з)=society_3
+matter=мати значення=society_3
+miss=сумувати за кимось=society_3
+pretend=вдавати=society_3
+shape=оформляти=society_3
+trust=довіряти=society_3
+upset=засмучувати=society_3
+be in somebody's shoes=бути на чиємусь місці=society_3
+be interested in=бути зацікавленим в=society_3
+be into sth=бути зацікавленим чимось=society_3
+be mad about=злитися через=society_3
+can't stand=не можна витримати=society_3
+complete opposite=повна протилежність=society_3
+express feelings=виражати почуття=society_3
+get angry/excited=розгніватися/схвилюватися=society_3
+improve mood=покращити настрій=society_3
+keep somebody amused=розважати когось=society_3
+mental development=розумовий розвиток=society_3
+personal preference=особисті вподобання/переваги=society_3
+shape behaviour=формувати поведінку=society_3
+adoptive parents=прийомні батьки=society_1
+ancestor=предок=society_1
+an only child=єдина дитина=society_1
+arranged marriage=шлюб за розрахунком=society_1
+aunt=тітка=society_1
+brother=брат=society_1
+child (pl: children)=дитина (множ. діти)=society_1
+cousin=двоюрідний брат чи сестра=society_1
+daughter=дочка=society_1
+distant relative=далекий родич=society_1
+extended family=розширена родина=society_1
+family member=член сімʼї=society_1
+father/dad=батько=society_1
+foster family=прийомна родина=society_1
+granddaughter=онука=society_1
+grandfather=дідусь=society_1
+grandmother=бабуся=society_1
+grandson=онук=society_1
+great-grandfather=прадід=society_1
+great-grandmother=прабабуся=society_1
+husband=чоловік=society_1
+mother/mum=мати=society_1
+mother-in-law=теща, свекруха=society_1
+nephew=племінник=society_1
+niece=племінниця=society_1
+nuclear family=повна родина=society_1
+offspring=нащадок, потомство=society_1
+parents=батьки=society_1
+relative=родич=society_1
+sibling=рідний брат чи сестра=society_1
+sister=сестра=society_1
+son-in-law=зять=society_1
+stepdaughter=пасербиця=society_1
+stepfather=вітчим=society_1
+stepmother=мачуха=society_1
+stepson=пасинок=society_1
+twin=близнюк=society_1
+uncle=дядько=society_1
+adult=дорослий=society_1
+baby=немовля=society_1
+be born (into ... family)=народитися (в... сімʼї)=society_1
+be having a baby=чекати на дитину=society_1
+be pregnant=бути вагітною=society_1
+buy a house=купити будинок=society_1
+childhood=дитинство=society_1
+cohabitation=співжиття, співіснування=society_1
+die=помирати=society_1
+generation=покоління=society_1
+get a job=отримати роботу=society_1
+get married to sb=одружитись=society_1
+graduate from university/school=закінчити університет/школу=society_1
+grow old=постаріти=society_1
+house-warming party=святкування новосілля=society_1
+independent=незалежний=society_1
+marry sb=одружитись=society_1
+middle-aged=середнього віку=society_1
+retire (from work)=вийти на пенсію=society_1
+retirement=пенсія=society_1
+start a family=створити сімʼю=society_1
+teenager=підліток=society_1
+toddler=малюк, немовля=society_1
+address=адреса=society_1
+age=вік=society_1
+country of residence=країна проживання=society_1
+date of birth=дата народження=society_1
+divorced=розлучений=society_1
+ethnic origin=етнічне походження=society_1
+female=жіноча стать=society_1
+first name=імʼя=society_1
+gender=стать=society_1
+male=чоловіча стать=society_1
+marital status=сімейний стан=society_1
+nationality=національність=society_1
+occupation=професія=society_1
+single=неодружений=society_1
+surname=прізвище=society_1
+widow=вдова=society_1
+bachelor=холостяк=society_1
+behaviour=поведінка=society_1
+birth rate=рівень народжуваності=society_1
+breadwinner=годувальник=society_1
+(bride)groom=наречений=society_1
+bride=наречена=society_1
+childbirth=пологи=society_1
+childcare=догляд за дітьми=society_1
+community=громада, спільнота=society_1
+couple=пара=society_1
+discrimination=дискримінація=society_1
+divorce rate=рівень/відсоток розлучень=society_1
+effect=вплив=society_1
+household=домашнє господарство=society_1
+impression=враження=society_1
+influence=вплив=society_1
+loner=самітник=society_1
+marriage contract=шлюбний договір=society_1
+peer pressure=тиск з боку однолітків=society_1
+peer=ровесник=society_1
+registered partnership=зареєстроване партнерство=society_1
+relationship with=стосунки з=society_1
+respect (for)=повага (до)=society_1
+strong bond=міцний звʼязок=society_1
+admire=захоплюватись=society_1
+adopt=усиновлювати=society_1
+affect=впливати=society_1
+care for=дбати про=society_1
+express=виражати=society_1
+irritate=дратувати=society_1
+provide=забезпечувати=society_1
+raise=виховувати=society_1
+regret=жалкувати=society_1
+support=підтримувати=society_1
+value=цінувати=society_1
+count on=розраховувати на=society_1
+fall in love=закохатися=society_1
+grow up=вирости=society_1
+look after=доглядати за=society_1
+look up to someone=рівнятись на когось=society_1
+sleep over=залишатися на ночівлю=society_1
+take after someone=бути схожим на (піти в когось)=society_1
+take care of=доглядати, дбати про=society_1
+tell someone off=вичитувати когось=society_1
+at the age of=у віці=society_1
+close relationship with sb=близькі стосунки з кимось=society_1
+develop personality=розвивати особистість=society_1
+generation gap=прірва поколінь (проблема батьків і дітей)=society_1
+have much in common=мати багато спільного=society_1
+keen on something=захоплюватись, любити щось=society_1
+on your own=самостійно=society_1
+absence=відсутність=other
+accept=приймати=other
+accompany=супроводжувати=other
+accurate=точний=other
+achieve=досягати=other
+acknowledge=визнати=other
+adjust=пристосовуватись=other
+admire=захоплюватись=other
+adolescent=підліток=other
+advice=порада=other
+advise=радити=other
+affair=справа=other
+agree on/to smth=погодитись на щось=other
+allow=дозволяти=other
+be eager to do=мати бажання щось робити=other
+be fond of (Ving)=захоплюватися=other
+be in debt=бути в боргу=other
+be keen on (Ving)=бути захопленим чимось=other
+benefit=користь, перевага=other
+blame=звинувачувати=other
+circumstances=обставини=other
+committee=комітет=other
+communicate=спілкуватись=other
+complete=завершувати=other
+concern=занепокоєння, стурбованість=other
+confirm=підтверджувати=other
+contribute=робити внесок=other
+curriculum=навчальна програма=other
+damage=пошкодження=other
+deal=угода=other
+defend=захищати=other
+demand=вимагати=other
+distinguish=розрізняти, виявляти відмінності=other
+distribute=розповсюджувати=other
+education=освіта=other
+effect=вплив=other
+efficiency=ефективність=other
+efficient=дієвий=other
+effort=зусилля=other
+election=вибори=other
+emphasize=підкреслювати, наголошувати=other
+employee=працівник=other
+empty=пустий=other
+enable=давати змогу, дозволяти=other
+encourage=заохочувати=other
+engage=залучати=other
+enhance=покращувати=other
+entertainment=розвага=other
+estimate=оцінювати=other
+evaluate=оцінювати, вимірювати=other
+evidence=докази=other
+examination=огляд (у лікаря)=other
+except=крім=other
+expand=розширювати=other
+facility=заклад, установа, приміщення=other
+former=колишній=other
+fate=доля=other
+feature=особливість=other
+focus=увага, зосередження=other
+fortune=статок, вдача=other
+generate=створювати, генерувати=other
+government=уряд=other
+guarantee=гарантія=other
+habit=звичка=other
+habitat=середовище проживання=other
+headquarters=штаб-квартира=other
+heritage=спадщина=other
+highway=магістраль=other
+homeless=бездомний=other
+horizon=горизонт=other
+household=домогосподарство=other
+improve=покращити=other
+in case of=у випадку=other
+incident=інцидент, випадок=other
+include=включати, містити у собі=other
+influence=вплив=other
+insist on=наполягати на=other
+involve=залучити, включати=other
+lack=нестача=other
+look for=шукати=other
+loose=вільний, нещільний=other
+lose=губити=other
+notice smth=помітити=other
+negotiate=вести переговори=other
+obligation=зобовʼязання=other
+occupy=займати=other
+offense=правопорушення=other
+opportunity=можливість=other
+participate=брати участь=other
+penalty=штраф, покарання=other
+permission=дозвіл=other
+pretend=прикидатися=other
+rely on=покладатися на=other
+require=вимагати=other
+sentence=вирок=other
+significant=значний, суттєвий, важливий=other
+violence=насильство=other
+victim=жертва=other
+widespread=широко розповсюджений=other
+whereas=в той час як=other
