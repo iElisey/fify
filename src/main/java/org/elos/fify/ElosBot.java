@@ -18,14 +18,20 @@ import org.telegram.telegrambots.longpolling.starter.SpringLongPollingBot;
 import org.telegram.telegrambots.longpolling.util.LongPollingSingleThreadUpdateConsumer;
 import org.telegram.telegrambots.meta.api.methods.AnswerInlineQuery;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
+import org.telegram.telegrambots.meta.api.methods.updatingmessages.EditMessageText;
+import org.telegram.telegrambots.meta.api.objects.CallbackQuery;
 import org.telegram.telegrambots.meta.api.objects.Update;
 import org.telegram.telegrambots.meta.api.objects.inlinequery.InlineQuery;
 import org.telegram.telegrambots.meta.api.objects.inlinequery.inputmessagecontent.InputTextMessageContent;
 import org.telegram.telegrambots.meta.api.objects.inlinequery.result.InlineQueryResultArticle;
 import org.telegram.telegrambots.meta.api.objects.message.Message;
+import org.telegram.telegrambots.meta.api.objects.replykeyboard.InlineKeyboardMarkup;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.ReplyKeyboardMarkup;
+import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.InlineKeyboardButton;
+import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.InlineKeyboardRow;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.KeyboardButton;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.KeyboardRow;
+import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 import org.telegram.telegrambots.meta.generics.TelegramClient;
 
 import java.io.BufferedReader;
@@ -40,7 +46,7 @@ public class ElosBot implements SpringLongPollingBot, LongPollingSingleThreadUpd
     private final UserService userService;
     private final Map<Long, TestSession> testSessions = new HashMap<>();
     private final Map<Long, String> tempWords = new HashMap<>();
-    private final Map<Long, String> tempTopics = new HashMap<>();
+    private final Map<Integer, String> messageTexts = new HashMap<>();
     private static final long ADMIN_ID = 975340794L;
     private static final String API_URL = "https://api.aimlapi.com/v1/chat/completions";
     private static final String API_KEY = "01c7a757bd2d41b68824763f6633976c";
@@ -63,12 +69,14 @@ public class ElosBot implements SpringLongPollingBot, LongPollingSingleThreadUpd
     }
 
 
-
     @Override
     public void consume(Update update) {
         if (update.hasInlineQuery()) {
             handleInlineQuery(update.getInlineQuery());
             return;
+        }
+        if (update.hasCallbackQuery()) {
+            handleCallbackQuery(update.getCallbackQuery());
         }
         if (update.hasMessage() && update.getMessage().getText() != null) {
             Message message = update.getMessage();
@@ -150,16 +158,84 @@ public class ElosBot implements SpringLongPollingBot, LongPollingSingleThreadUpd
         if (foundWord.isPresent()) {
             Word word1 = foundWord.get();
             String response = word1.getEnglish().equalsIgnoreCase(word)
-                    ? "🇺🇸 " + word1.getEnglish() + " → 🇺🇦 " + word1.getUkrainian()
-                    : "🇺🇦 " + word1.getUkrainian() + " → 🇺🇸 " + word1.getEnglish();
+                    ? "\uD83C\uDDFA\uD83C\uDDF8 " + word1.getEnglish() + " → \uD83C\uDDFA\uD83C\uDDE6 " + word1.getUkrainian()
+                    : "\uD83C\uDDFA\uD83C\uDDE6 " + word1.getUkrainian() + " → \uD83C\uDDFA\uD83C\uDDF8 " + word1.getEnglish();
 
-            String exampleSentence = askAI("generate a sentence B1 level (10-12 words) with word " + word + ", send only this sentence");
-            response += "\n📖 Приклад: " + exampleSentence;
-            sendMsg(chatId, response);
+            SendMessage message = SendMessage.builder()
+                    .text(response)
+                    .chatId(chatId)
+                    .parseMode("HTML")
+                    .build();
+            String callbackData = "add_example:" + word1.getId();
+
+
+            InlineKeyboardMarkup keyboardMarkup = InlineKeyboardMarkup
+                    .builder().keyboardRow(new InlineKeyboardRow(
+                            InlineKeyboardButton.builder()
+                                    .text("Показати приклад")
+                                    .callbackData(callbackData)
+                                    .build()))
+                    .build();
+            message.setReplyMarkup(keyboardMarkup);
+
+            try {
+                Message sentMessage = telegramClient.execute(message);
+                messageTexts.put(sentMessage.getMessageId(), response);
+
+            } catch (TelegramApiException e) {
+                throw new RuntimeException(e);
+            }
             return true;
         }
         return false;
     }
+
+    public void handleCallbackQuery(CallbackQuery callbackQuery) {
+        if (callbackQuery.getData() != null) {
+            String callbackData = callbackQuery.getData();
+            Long chatId = callbackQuery.getMessage().getChatId();
+            Integer messageId = callbackQuery.getMessage().getMessageId();
+            if (callbackData.startsWith("add_example:")) {
+                Long wordId = Long.valueOf(callbackData.split(":")[1]);
+                Optional<Word> optionalWord = wordRepository.findById(wordId);
+
+                if (optionalWord.isEmpty()) {
+                    SendMessage errorMessage = SendMessage.builder()
+                            .text("❗\uFE0F <b>Слово не найдено в базе данных.</b>")
+                            .chatId(chatId)
+                            .parseMode("HTML")
+                            .build();
+                    try {
+                        telegramClient.execute(errorMessage);  // Отправляем сообщение пользователю
+                    } catch (TelegramApiException e) {
+                        throw new RuntimeException(e);
+                    }
+                    return;
+                }
+
+                Word word = optionalWord.get();
+                String english = word.getEnglish();
+                String ukrTranslation = word.getUkrainian();
+                String exampleSentence = askAI("generate a sentence English B1 level (10-12 words) with word " + english + ", which means " + ukrTranslation + ", send only this sentence");
+
+                String originalText = messageTexts.getOrDefault(messageId, "");
+                String newText = originalText + "\n\uD83D\uDCD6 Приклад: " + exampleSentence;
+                EditMessageText editMessage = EditMessageText.builder()
+                        .text(newText)
+                        .chatId(chatId)
+                        .messageId(messageId)
+                        .build();
+
+                try {
+                    messageTexts.clear();
+                    telegramClient.execute(editMessage);
+                } catch (TelegramApiException e) {
+                    throw new RuntimeException(e);
+                }
+            }
+        }
+    }
+
 
     private void handleCommand(Long chatId, String text, User user, Integer messageId) {
         switch (text.toLowerCase()) {
@@ -214,7 +290,7 @@ public class ElosBot implements SpringLongPollingBot, LongPollingSingleThreadUpd
                 sendMsg(chatId, "⚙️ <b>Команди:</b>\n" +
                         "/start - почати відправку слів\n" +
                         "/stop - зупинити відправку\n" +
-                        "/change_topic - змінити тему слів\n"+
+                        "/change_topic - змінити тему слів\n" +
                         "/test_words - пройти тест\n" +
                         "/add_word - додати слово\n" +
                         "/web - посилання (адмін)\n" +
