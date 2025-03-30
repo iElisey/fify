@@ -262,7 +262,7 @@ public class ElosBot implements SpringLongPollingBot, LongPollingSingleThreadUpd
                 userService.save(user);
                 break;
             case "/add_word":
-                if (chatId == ADMIN_ID) {
+                if (chatId == ADMIN_ID || chatId == 498328692L) {
 
 
                     sendMessageWithCancel(chatId, "🇺🇸 Введіть слово англійською:");
