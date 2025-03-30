@@ -262,20 +262,27 @@ public class ElosBot implements SpringLongPollingBot, LongPollingSingleThreadUpd
                 userService.save(user);
                 break;
             case "/add_word":
-                sendMessageWithCancel(chatId, "🇺🇸 Введіть слово англійською:");
-                user.setPosition(3);
-                userService.save(user);
-                break;
+                if (chatId == ADMIN_ID) {
+
+
+                    sendMessageWithCancel(chatId, "🇺🇸 Введіть слово англійською:");
+                    user.setPosition(3);
+                    userService.save(user);
+                    break;
+                }
             case "/web":
                 if (chatId == ADMIN_ID) {
                     sendReplyMessage(chatId, "<a href=\"https://ielisey.github.io/fifyfront/\"><b>Web Link</b></a>", messageId);
                 }
                 break;
             case "/ai":
-                sendMessageWithCancel(chatId, "ℹ️ Введіть питання для ШІ:");
-                user.setPosition(5);
-                userService.save(user);
-                break;
+                if (chatId == ADMIN_ID) {
+
+                    sendMessageWithCancel(chatId, "ℹ️ Введіть питання для ШІ:");
+                    user.setPosition(5);
+                    userService.save(user);
+                    break;
+                }
             case "/analytics":
                 if (chatId == ADMIN_ID) {
                     showAnalytics(chatId);
@@ -287,17 +294,27 @@ public class ElosBot implements SpringLongPollingBot, LongPollingSingleThreadUpd
                 }
                 break;
             case "/help":
-                sendMsg(chatId, "⚙️ <b>Команди:</b>\n" +
-                        "/start - почати відправку слів\n" +
-                        "/stop - зупинити відправку\n" +
-                        "/change_topic - змінити тему слів\n" +
-                        "/test_words - пройти тест\n" +
-                        "/add_word - додати слово\n" +
-                        "/web - посилання (адмін)\n" +
-                        "/ai - запитати ШІ\n" +
-                        "/analytics - аналітика (адмін)\n" +
-                        "/load_words - завантажити слова (адмін)");
-                break;
+                if (chatId == ADMIN_ID) {
+
+                    sendMsg(chatId, "⚙️ <b>Команди:</b>\n" +
+                            "/start - почати відправку слів\n" +
+                            "/stop - зупинити відправку\n" +
+                            "/change_topic - змінити тему слів\n" +
+                            "/test_words - пройти тест\n" +
+                            "/add_word - додати слово\n" +
+                            "/web - посилання (адмін)\n" +
+                            "/ai - запитати ШІ\n" +
+                            "/analytics - аналітика (адмін)\n" +
+                            "/load_words - завантажити слова (адмін)");
+                    break;
+                } else {
+                    sendMsg(chatId, "⚙️ <b>Команди:</b>\n" +
+                            "/start - почати відправку слів\n" +
+                            "/stop - зупинити відправку\n" +
+                            "/change_topic - змінити тему слів\n" +
+                            "/test_words - пройти тест\n");
+                    break;
+                }
             default:
                 sendMsg(chatId, "❓ Невідома команда.");
         }
