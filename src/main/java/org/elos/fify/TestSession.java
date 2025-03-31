@@ -38,14 +38,54 @@ public class TestSession {
 
     public void processAnswer(String answer) {
         Word currentWord = words.get(currentIndex);
-        if (answer.equalsIgnoreCase(currentWord.getUkrainian())) {
+        String correctAnswer = currentWord.getUkrainian().toLowerCase();
+        String userAnswer = answer.trim().toLowerCase();
+
+        // Точна відповідність
+        if (userAnswer.equals(correctAnswer)) {
             correctAnswers++;
             sendMessage(chatId, "✅ Правильно!");
         } else {
-            sendMessage(chatId, "❌ Неправильно. Правильна відповідь: <b>" + currentWord.getUkrainian() + "</b>");
+            // Перевіряємо відстань Левенштейна
+            int distance = calculateLevenshteinDistance(userAnswer, correctAnswer);
+            double similarity = 1.0 - (double) distance / Math.max(userAnswer.length(), correctAnswer.length());
+
+            if (similarity >= 0.85 && distance <= 2) { // 85% схожості та не більше 2 помилок
+                correctAnswers++;
+                sendMessage(chatId, "✅ Правильно!");
+            } else {
+                sendMessage(chatId, "❌ Неправильно. Правильна відповідь: <b>" + currentWord.getUkrainian() + "</b>");
+            }
         }
+
         currentIndex++;
         askNextWord();
+    }
+
+    // Метод для обчислення відстані Левенштейна
+    private int calculateLevenshteinDistance(String x, String y) {
+        int[][] dp = new int[x.length() + 1][y.length() + 1];
+
+        for (int i = 0; i <= x.length(); i++) {
+            for (int j = 0; j <= y.length(); j++) {
+                if (i == 0) {
+                    dp[i][j] = j;
+                } else if (j == 0) {
+                    dp[i][j] = i;
+                } else {
+                    dp[i][j] = min(
+                            dp[i - 1][j - 1] + (x.charAt(i - 1) == y.charAt(j - 1) ? 0 : 1),
+                            dp[i - 1][j] + 1,
+                            dp[i][j - 1] + 1
+                    );
+                }
+            }
+        }
+        return dp[x.length()][y.length()];
+    }
+
+    private int min(int a, int b, int c) {
+        return Math.min(Math.min(a, b), c);
     }
 
     private void sendMessage(Long chatId, String text) {

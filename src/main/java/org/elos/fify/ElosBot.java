@@ -18,6 +18,7 @@ import org.telegram.telegrambots.longpolling.starter.SpringLongPollingBot;
 import org.telegram.telegrambots.longpolling.util.LongPollingSingleThreadUpdateConsumer;
 import org.telegram.telegrambots.meta.api.methods.AnswerInlineQuery;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
+import org.telegram.telegrambots.meta.api.methods.updatingmessages.DeleteMessage;
 import org.telegram.telegrambots.meta.api.methods.updatingmessages.EditMessageText;
 import org.telegram.telegrambots.meta.api.objects.CallbackQuery;
 import org.telegram.telegrambots.meta.api.objects.Update;
@@ -46,6 +47,9 @@ public class ElosBot implements SpringLongPollingBot, LongPollingSingleThreadUpd
     private final Map<Long, TestSession> testSessions = new HashMap<>();
     private final Map<Long, String> tempWords = new HashMap<>();
     private final Map<Integer, String> messageTexts = new HashMap<>();
+    private final Map<Long, Integer> userMessageMap = new HashMap<>();
+
+
     private static final long ADMIN_ID = 975340794L;
     private static final String API_URL = "https://api.aimlapi.com/v1/chat/completions";
     private static final String API_KEY = "01c7a757bd2d41b68824763f6633976c";
@@ -236,6 +240,24 @@ public class ElosBot implements SpringLongPollingBot, LongPollingSingleThreadUpd
                 } catch (TelegramApiException e) {
                     throw new RuntimeException(e);
                 }
+            }
+            else if (callbackData.startsWith("choose_topic:")) {
+                String chosenTopic = callbackData.replace("choose_topic:", "");
+                handleUserInput(chatId, chosenTopic,userService.findByChatId(chatId), messageId);
+                EditMessageText editMessageText = EditMessageText
+                        .builder()
+                        .text("<b>\uD83D\uDC4C Ви обрали тему: </b>" + chosenTopic)
+                        .messageId(messageId)
+                        .chatId(chatId)
+                        .parseMode("HTML")
+                        .build();
+
+                try {
+                    telegramClient.execute(editMessageText);
+                } catch (TelegramApiException e) {
+                    throw new RuntimeException(e);
+                }
+
             }
         }
     }
@@ -434,10 +456,46 @@ public class ElosBot implements SpringLongPollingBot, LongPollingSingleThreadUpd
 
     private void showTopics(Long chatId) {
         List<String> topics = wordRepository.findAllTopics();
-        StringBuilder sb = new StringBuilder("Доступні теми:\n\n");
-        topics.forEach(topic -> sb.append("▫ *").append(topic).append("*\n")); // Жирний текст
-        sendMsg(chatId, sb.toString());
+        List<InlineKeyboardRow> inlineKeyboardRows = new ArrayList<>();
+        List<InlineKeyboardButton> row = new ArrayList<>();
+
+        for (int i = 0; i < topics.size(); i++) {
+            String topic = topics.get(i);
+            InlineKeyboardButton button = InlineKeyboardButton.builder()
+                    .text(topic)
+                    .callbackData("choose_topic:" + topic)
+                    .build();
+            row.add(button);
+
+            // Додаємо ряд при 2 кнопках або в кінці списку
+            if (row.size() == 2 || i == topics.size() - 1) {
+                InlineKeyboardRow keyboardRow = new InlineKeyboardRow(row);
+                inlineKeyboardRows.add(keyboardRow);
+                row.clear();
+            }
+        }
+
+// Створюємо клавіатуру
+        InlineKeyboardMarkup keyboard = InlineKeyboardMarkup.builder()
+                .keyboard(inlineKeyboardRows)
+                .build();
+
+        SendMessage message = SendMessage.builder()
+                .chatId(chatId)
+                .text("Доступні теми:")
+                .replyMarkup(keyboard).build();
+        try {
+            Message sentMessage = telegramClient.execute(message);
+            Integer messageId = sentMessage.getMessageId();
+            userMessageMap.put(chatId, messageId); // Зберігаємо для видалення
+
+        } catch (TelegramApiException e) {
+            throw new RuntimeException(e);
+        }
+
+
     }
+
 
     @Scheduled(fixedRate = 10000)
     private void sendRandomWords() {
