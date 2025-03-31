@@ -37,7 +37,6 @@ import org.telegram.telegrambots.meta.generics.TelegramClient;
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.util.*;
-import java.util.stream.Collectors;
 
 @Component
 public class ElosBot implements SpringLongPollingBot, LongPollingSingleThreadUpdateConsumer {
@@ -128,6 +127,10 @@ public class ElosBot implements SpringLongPollingBot, LongPollingSingleThreadUpd
         List<InlineQueryResultArticle> results = new ArrayList<>();
 
         for (Word word : words) {
+            if ("rofls".equalsIgnoreCase(word.getTopic())) { // Перевіряємо, чи слово не з теми "rofls"
+                continue;
+            }
+
             InputTextMessageContent messageContent = InputTextMessageContent.builder()
                     .messageText(word.getEnglish())
                     .build();
@@ -152,6 +155,7 @@ public class ElosBot implements SpringLongPollingBot, LongPollingSingleThreadUpd
             e.printStackTrace();
         }
     }
+
 
     private boolean trySendTranslation(Long chatId, String word) {
         Optional<Word> foundWord = wordRepository.findFirstByEnglishIgnoreCaseOrUkrainianIgnoreCase(word, word);
@@ -246,7 +250,7 @@ public class ElosBot implements SpringLongPollingBot, LongPollingSingleThreadUpd
                 userService.save(user);
                 break;
             case "/change_topic":
-                sendMsg(chatId, "🌟 Виберіть тему слів:");
+                sendMsgWithCancel(chatId, "🌟 Виберіть тему слів:");
                 showTopics(chatId);
                 user.setPosition(1);
                 userService.save(user);
@@ -265,7 +269,7 @@ public class ElosBot implements SpringLongPollingBot, LongPollingSingleThreadUpd
                 if (chatId == ADMIN_ID || chatId == 498328692L) {
 
 
-                    sendMessageWithCancel(chatId, "🇺🇸 Введіть слово англійською:");
+                    sendMsgWithCancel(chatId, "🇺🇸 Введіть слово англійською:");
                     user.setPosition(3);
                     userService.save(user);
                     break;
@@ -278,7 +282,7 @@ public class ElosBot implements SpringLongPollingBot, LongPollingSingleThreadUpd
             case "/ai":
                 if (chatId == ADMIN_ID) {
 
-                    sendMessageWithCancel(chatId, "ℹ️ Введіть питання для ШІ:");
+                    sendMsgWithCancel(chatId, "ℹ️ Введіть питання для ШІ:");
                     user.setPosition(5);
                     userService.save(user);
                     break;
@@ -329,8 +333,8 @@ public class ElosBot implements SpringLongPollingBot, LongPollingSingleThreadUpd
                 userService.setSendWords(chatId, true);
                 sendMsg(chatId, "✅ Відправка слів почалася (тема: " + text + ").");
             } else {
-                sendMsg(chatId, "❌ Теми '" + text + "' немає в базі даних. Виберіть іншу:\n" + String.join("\n", availableTopics));
-                return; // Залишаємо користувача в стані вибору теми
+                sendMsgWithCancel(chatId, "❌ Теми '" + text + "' немає в базі даних. Виберіть іншу:\n" + String.join("\n", availableTopics));
+                return;
             }
             user.setPosition(0);
         } else if (user.getPosition() == 2) { // Вибір теми для тесту
@@ -339,7 +343,7 @@ public class ElosBot implements SpringLongPollingBot, LongPollingSingleThreadUpd
             userService.save(user);
         } else if (user.getPosition() == 3) { // Додавання слова (англ)
             tempWords.put(chatId, text);
-            sendMessageWithCancel(chatId, "🇺🇦 Введіть переклад українською:");
+            sendMsgWithCancel(chatId, "🇺🇦 Введіть переклад українською:");
             user.setPosition(4);
             userService.save(user);
         } else if (user.getPosition() == 4) { // Додавання слова (укр)
@@ -430,8 +434,8 @@ public class ElosBot implements SpringLongPollingBot, LongPollingSingleThreadUpd
 
     private void showTopics(Long chatId) {
         List<String> topics = wordRepository.findAllTopics();
-        StringBuilder sb = new StringBuilder("Доступні теми:\n");
-        topics.forEach(topic -> sb.append("- ").append(topic).append("\n"));
+        StringBuilder sb = new StringBuilder("Доступні теми:\n\n");
+        topics.forEach(topic -> sb.append("▫ *").append(topic).append("*\n")); // Жирний текст
         sendMsg(chatId, sb.toString());
     }
 
@@ -446,12 +450,24 @@ public class ElosBot implements SpringLongPollingBot, LongPollingSingleThreadUpd
         for (User user : activeUsers) {
             List<Word> words = new ArrayList<>();
             String preferredTopic = user.getPreferredTopic();
+
             List<Word> topicWords = wordRepository.findRandomWordsByTopic(preferredTopic, 9);
             if (topicWords.isEmpty()) {
                 continue; // Пропускаємо користувача, якщо в обраній темі немає слів
             }
-            words.addAll(topicWords); // 90%
-            words.addAll(wordRepository.findRandomWordsExcludingTopic(preferredTopic, 1)); // 10%
+
+            Word randomWord;
+            do {
+                randomWord = wordRepository.findRandomWordsExcludingTopic(preferredTopic, 1).stream()
+                        .findFirst()
+                        .orElse(null);
+            } while (randomWord != null && "rofls".equalsIgnoreCase(randomWord.getTopic()));
+
+            if (randomWord != null) {
+                words.addAll(topicWords); // 90%
+                words.add(randomWord);    // 10%
+            }
+
             if (!words.isEmpty()) {
                 Collections.shuffle(words);
                 Word word = words.get(0);
@@ -483,7 +499,7 @@ public class ElosBot implements SpringLongPollingBot, LongPollingSingleThreadUpd
         }
     }
 
-    private void sendMessageWithCancel(Long chatId, String text) {
+    private void sendMsgWithCancel(Long chatId, String text) {
         SendMessage sendMessage = SendMessage.builder()
                 .chatId(chatId)
                 .text(text)
