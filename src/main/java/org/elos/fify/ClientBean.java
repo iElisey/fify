@@ -6,7 +6,7 @@ import org.telegram.telegrambots.client.okhttp.OkHttpTelegramClient;
 import org.telegram.telegrambots.meta.generics.TelegramClient;
 
 @Configuration
-public class MapperBean {
+public class ClientBean {
 
     @Bean
     public TelegramClient telegramClient() {
